@@ -1,16 +1,19 @@
-
+local UIS = game:GetService("UserInputService")
+--
 --[[
-I DO NOT OWN ANY OF THIS CODE 
+I DO NOT OWN ANY OF THIS CODE
 ALL IS OWNED BY AIDEZ
 https://github.com/Aidez/decaying_winter
 THIS CODE WAS MODIFIED TO BE A LIGHER/SEMI-LEGIT SCRIPT.
-]]--
-
-if game.PlaceId ~= 7551121821 and game.PlaceId ~= 9880062154 then
+]] if
+    game.PlaceId ~= 7551121821 and game.PlaceId ~= 9880062154
+ then
     return
 end
 
-repeat wait() until game.Players.LocalPlayer ~= nil
+repeat
+    wait()
+until game.Players.LocalPlayer ~= nil
 
 _G.Code1 = nil
 _G.Code2 = nil
@@ -30,6 +33,7 @@ local function RemoveMark(child)
         child.Parent = nil
     end
 end
+
 
 local function GrabMainScript()
     local Script = nil
@@ -139,71 +143,139 @@ local function GrabEssentials()
     TempEnv = nil
     FunnyPlace = nil
 end
+--[[
+
+local function yasss() 
+    if not game.Players.LocalPlayer.Character then
+        return
+    end
+    if FoodTable == nil or FoodTable == {} then
+        GrabEssentials()
+        task.wait(0.1)
+        FoodTable.hunger = math.huge
+        FoodTable.thirst = math.huge
+    else
+        FoodTable.hunger = math.huge
+        FoodTable.thirst = math.huge
+    end
+end
+]]
 
 
-game.Players.LocalPlayer.CharacterAdded:Connect(function(char)
-    repeat wait() until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
-    repeat wait() until game.Players.LocalPlayer:FindFirstChild("Backpack")
-    repeat wait() until game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD")
-    repeat wait() until game.Players.LocalPlayer.Backpack:FindFirstChildOfClass("LocalScript")
-    repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame")
-    repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
-    
-    GrabEssentials()
-    local FunnyPlace = getrenv()._G
-    if game.PlaceId ~= 9880062154 and not game.Workspace:FindFirstChild("HoldoutDecor") then
-        repeat 
-            local Continue = false
-            if game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD") and game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame") and game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses") then
-                for i,v in pairs(game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses:GetChildren()) do
-                    if string.find(v.Name, "Virus") then
-                        VirusFrame = v
-                        repeat wait() until v:FindFirstChild("EmptyBar")
-                        repeat wait() until v.EmptyBar:FindFirstChild("Bar")
-                        v.EmptyBar.Bar.Changed:Connect(VirusChanged)
-                        Continue = true
+game.Players.LocalPlayer.CharacterAdded:Connect(
+    function(char)
+        repeat
+            wait()
+        until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+        repeat
+            wait()
+        until game.Players.LocalPlayer:FindFirstChild("Backpack")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.Backpack:FindFirstChildOfClass("LocalScript")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
+
+        GrabEssentials()
+        local FunnyPlace = getrenv()._G
+        if game.PlaceId ~= 9880062154 and not game.Workspace:FindFirstChild("HoldoutDecor") then
+            repeat
+                local Continue = false
+                if
+                    game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD") and
+                        game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame") and
+                        game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
+                 then
+                    for i, v in pairs(game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses:GetChildren()) do
+                        if string.find(v.Name, "Virus") then
+                            VirusFrame = v
+                            repeat
+                                wait()
+                            until v:FindFirstChild("EmptyBar")
+                            repeat
+                                wait()
+                            until v.EmptyBar:FindFirstChild("Bar")
+                            v.EmptyBar.Bar.Changed:Connect(VirusChanged)
+                            Continue = true
+                        end
                     end
                 end
-            end
-            wait() 
-        until Continue
+                wait()
+            until Continue
+        end
+        game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses.ChildAdded:Connect(StatusAdded)
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("LowerHudFrame")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame:FindFirstChild("main")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame:FindFirstChild("reserve")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame.main:FindFirstChild("label")
+        repeat
+            wait()
+        until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame.reserve:FindFirstChild("label")
     end
-    game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses.ChildAdded:Connect(StatusAdded)
-    repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("LowerHudFrame")
-    repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame:FindFirstChild("main")
-    repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame:FindFirstChild("reserve")
-    repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame.main:FindFirstChild("label")
-    repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD.LowerHudFrame.reserve:FindFirstChild("label")
-end)
+)
 
-repeat wait() until game.Players.LocalPlayer:FindFirstChild("Backpack")
-repeat wait() until game.Players.LocalPlayer.Backpack:FindFirstChildOfClass("LocalScript")
+repeat
+    wait()
+until game.Players.LocalPlayer:FindFirstChild("Backpack")
+repeat
+    wait()
+until game.Players.LocalPlayer.Backpack:FindFirstChildOfClass("LocalScript")
 
 if game.Players.LocalPlayer.Character ~= nil then
     GrabEssentials()
 end
 
-
-repeat wait() until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
-repeat wait() until game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD")
-repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame")
-repeat wait() until game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
+repeat
+    wait()
+until game.Players.LocalPlayer:FindFirstChild("PlayerGui")
+repeat
+    wait()
+until game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD")
+repeat
+    wait()
+until game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame")
+repeat
+    wait()
+until game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
 
 if game.PlaceId ~= 9880062154 and not game.Workspace:FindFirstChild("HoldoutDecor") then
-    repeat 
+    repeat
         local Continue = false
-        if game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD") and game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame") and game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses") then
-            for i,v in pairs(game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses:GetChildren()) do
+        if
+            game.Players.LocalPlayer.PlayerGui:FindFirstChild("mainHUD") and
+                game.Players.LocalPlayer.PlayerGui.mainHUD:FindFirstChild("HealthFrame") and
+                game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
+         then
+            for i, v in pairs(game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses:GetChildren()) do
                 if string.find(v.Name, "Virus") then
                     VirusFrame = v
-                    repeat wait() until v:FindFirstChild("EmptyBar")
-                    repeat wait() until v.EmptyBar:FindFirstChild("Bar")
+                    repeat
+                        wait()
+                    until v:FindFirstChild("EmptyBar")
+                    repeat
+                        wait()
+                    until v.EmptyBar:FindFirstChild("Bar")
                     v.EmptyBar.Bar.Changed:Connect(VirusChanged)
                     Continue = true
                 end
             end
         end
-        wait() 
+        wait()
     until Continue
 end
 
@@ -326,24 +398,28 @@ game.StarterGui:SetCore(
 
 local Toggle3 = true -- last second to default to true, rather than a toggle
 Toggles.NoHunger = Toggle3
-local currenttext = ""
-if Toggle == true then
-    currenttext = "NoHunger is now ON!"
-    FoodTable.hunger = math.huge
-    FoodTable.thirst = math.huge
-else
-    currenttext = "NoHunger is now OFF!"
-    FoodTable.hunger = tick()
-    FoodTable.thirst = tick()
-end
-game.StarterGui:SetCore(
-    "SendNotification",
-    {
-        Title = "notification",
-        Text = currenttext,
-        Icon = "rbxassetid://2541869220",
-        Duration = 3
-    }
-)
+
+
+UIS.InputBegan:Connect(function(input2)
+    if input2.KeyCode == Enum.KeyCode.M then
+        if Toggles.NoHunger == true then
+            if FoodTable == nil or FoodTable == {} then
+                GrabEssentials()
+                wait(0.1)
+                print("1")
+                FoodTable.hunger = math.huge
+                print("2")
+                FoodTable.thirst = math.huge
+                print("3")
+            else
+                FoodTable.hunger = math.huge
+                print("55")
+                FoodTable.thirst = math.huge
+                print("66")
+            end
+        end
+    end
+
+end)
 
 game.Players.LocalPlayer.Character.Head.ChildAdded:Connect(RemoveMark)
