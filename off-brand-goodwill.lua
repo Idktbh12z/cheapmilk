@@ -24,7 +24,12 @@ local Toggles = {
     NoCooldown = false,
     AntiDebuff = false,
     VirusBlock = false,
-    NoHunger = false
+    NoHunger = false,
+    Dispenser = false
+}
+
+local Debounces = {
+    Dispensing = false
 }
 
 local function RemoveMark(child)
@@ -34,7 +39,6 @@ local function RemoveMark(child)
     end
 end
 
-
 local function GrabMainScript()
     local Script = nil
     for i, v in pairs(game.Players.LocalPlayer.Backpack.GetChildren(game.Players.LocalPlayer.Backpack)) do
@@ -43,6 +47,116 @@ local function GrabMainScript()
         end
     end
     return Script
+end
+
+local function getargs(inputstring)
+    inputstring = string.lower(inputstring)
+    inputstring = string.gsub(inputstring, "'", "")
+    inputstring = string.gsub(inputstring, ":", "")
+    inputstring = string.gsub(inputstring, ";", "")
+    inputstring = string.gsub(inputstring, "%.", "")
+    inputstring = string.gsub(inputstring, "/e ", "")
+    inputstring = string.gsub(inputstring, "/w ", "")
+    local args = string.split(inputstring, " ")
+    args.Command = args[1]
+    table.remove(args, 1)
+    return args
+end
+
+local function IsInTable(table, tofind)
+    local found = false
+    for i, v in pairs(table) do
+        if v == tofind then
+            found = true
+            break
+        end
+    end
+    return found
+end
+
+local function CommandHandler(msg, speaker)
+    local Args = getargs(msg)
+    if
+        IsInTable(
+            {
+                "scrap",
+                "mre",
+                "soda",
+                "beans",
+                "water",
+                "cola",
+                "bottle"
+            },
+            Args.Command
+        )
+     then
+        if not Toggles.Dispenser and speaker ~= game.Players.LocalPlayer then
+            return
+        end
+        local Amount = tonumber(Args[1])
+        local IsFood = false
+        if IsInTable({"mre", "soda", "beans", "water"}, Args.Command) then
+            IsFood = true
+        end
+        if Amount == nil and Args.Command == "scrap" then
+            Amount = 500
+        elseif Amount == nil and Args.Command ~= "scrap" then
+            Amount = 1
+        end
+        if Amount > 499 then
+            Amount = 500
+        else
+            Amount = Amount
+        end
+
+        if speaker == game.Players.LocalPlayer then
+            if Args.Command ~= "scrap" then
+                if not IsFood then
+                    local AmmoName = string.upper(string.sub(Args.Command, 1, 1)) .. string.sub(Args.Command, 2, -1)
+                    if AmmoTable[AmmoName] ~= nil then
+                        AmmoTable[AmmoName] = Amount
+                    end
+                else
+                    local FoodName = string.gsub(Args.Command, "water", "Bottle")
+                    FoodName = string.gsub(FoodName, "mre", "MRE")
+                    FoodName = string.gsub(FoodName, "cola", "Soda")
+                    FoodName = string.upper(string.sub(FoodName, 1, 1)) .. string.sub(FoodName, 2, -1)
+                    FoodTable[FoodName] = Amount
+                end
+                return
+            else
+                workspace.ServerStuff.dropAmmo:FireServer("scrap", Amount)
+                return
+            end
+        elseif
+            speaker ~= game.Players.LocalPlayer and Toggles.Dispenser and speaker.Character ~= nil and
+                not Debounces.Dispensing and
+                speaker.Character:FindFirstChild("HumanoidRootPart")
+         then
+            Debounces.Dispensing = true
+            local ReturnTo = nil
+            if
+                Toggles.Dispenser and game.Players.LocalPlayer.Character ~= nil and
+                    game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+             then
+                ReturnTo = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame =
+                    speaker.Character.HumanoidRootPart.CFrame * CFrame.new(0, 3, 0)
+            end
+            if Args.Command ~= "scrap" then
+                local AmmoName = string.upper(string.sub(Args.Command, 1, 1)) .. string.sub(Args.Command, 2, -1)
+                for i = 1, Amount do
+                    workspace.ServerStuff.dropAmmo:FireServer(AmmoName, 100)
+                end
+            else
+                workspace.ServerStuff.dropAmmo:FireServer("scrap", Amount)
+            end
+            if ReturnTo ~= nil then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = ReturnTo
+            end
+            Debounces.Dispensing = false
+        end
+    end
 end
 
 local function StatusAdded(new)
@@ -143,24 +257,6 @@ local function GrabEssentials()
     TempEnv = nil
     FunnyPlace = nil
 end
---[[
-
-local function yasss() 
-    if not game.Players.LocalPlayer.Character then
-        return
-    end
-    if FoodTable == nil or FoodTable == {} then
-        GrabEssentials()
-        task.wait(0.1)
-        FoodTable.hunger = math.huge
-        FoodTable.thirst = math.huge
-    else
-        FoodTable.hunger = math.huge
-        FoodTable.thirst = math.huge
-    end
-end
-]]
-
 
 game.Players.LocalPlayer.CharacterAdded:Connect(
     function(char)
@@ -395,31 +491,28 @@ game.StarterGui:SetCore(
         Duration = 3
     }
 )
-
-local Toggle3 = true -- last second to default to true, rather than a toggle
-Toggles.NoHunger = Toggle3
-
-
-UIS.InputBegan:Connect(function(input2)
-    if input2.KeyCode == Enum.KeyCode.M then
-        if Toggles.NoHunger == true then
+UIS.InputBegan:Connect(
+    function(input)
+        if input == Enum.KeyCode.M then
+            if game.Players.LocalPlayer.Character == nil then
+                return
+            end
             if FoodTable == nil or FoodTable == {} then
                 GrabEssentials()
-                wait(0.1)
-                print("1")
+                wait(0.5)
                 FoodTable.hunger = math.huge
-                print("2")
                 FoodTable.thirst = math.huge
-                print("3")
             else
                 FoodTable.hunger = math.huge
-                print("55")
                 FoodTable.thirst = math.huge
-                print("66")
             end
+        else
         end
     end
-
-end)
-
+)
+game.Players.LocalPlayer.Chatted:Connect(
+    function(msg)
+        CommandHandler(msg, game.Players.LocalPlayer)
+    end
+)
 game.Players.LocalPlayer.Character.Head.ChildAdded:Connect(RemoveMark)
