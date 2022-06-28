@@ -358,6 +358,8 @@ repeat
     wait()
 until game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
 
+local CurrentPerkTroLL = game.Players.LocalPlayer.Character:WaitForChild("current_perk")
+
 if game.PlaceId ~= 9880062154 and not game.Workspace:FindFirstChild("HoldoutDecor") then
     repeat
         local Continue = false
@@ -566,6 +568,15 @@ game.Players.LocalPlayer.Chatted:Connect(
 )
 game.Players.LocalPlayer.Character.Head.ChildAdded:Connect(RemoveMark)
 
+
+
 if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Health <= 0 then
     Toggles.NoCooldown = false
 end
+
+
+CurrentPerkTroLL.Changed:Connect(function()
+if not CurrentPerkTroLL == CurrentPerkTroLL then
+Toggles.NoCooldown = false
+end
+end)
