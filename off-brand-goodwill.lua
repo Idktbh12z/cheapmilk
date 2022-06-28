@@ -25,7 +25,8 @@ local Toggles = {
     AntiDebuff = false,
     VirusBlock = false,
     NoHunger = false,
-    Dispenser = false
+    Dispenser = false,
+    InfAux = false
 }
 
 local Debounces = {
@@ -510,6 +511,52 @@ UIS.InputBegan:Connect(
         end
     end
 )
+
+UIS.InputBegan:Connect(
+    function(input2)
+        if input2.KeyCode == Enum.KeyCode.L then
+            local Toggle4 = true
+            Toggles.InfAux = Toggle4
+            local currenttext = ""
+            if Toggle == true then
+                currenttext = "InfAux is now ON!"
+            else
+                local Env = getsenv(GrabMainScript())
+                Env["aux_usage"] = 1
+                currenttext = "InfAux is now OFF!"
+            end
+            game.StarterGui:SetCore(
+                "SendNotification",
+                {
+                    Title = "notification",
+                    Text = currenttext,
+                    Icon = "rbxassetid://2541869220",
+                    Duration = 3
+                }
+            )
+        else
+        end
+    end
+)
+
+UIS.InputBegan:connect(function(input2)
+    if input2.KeyCode == Enum.KeyCode.C then
+        local Env = getsenv(GrabMainScript())
+        if Env["aux_usage"] ~= nil and Env["aux_usage"] <= 0 then
+            if Env["use_aux"] ~= nil then
+                Env["aux_usage"] = math.huge
+                wait()
+                Env["use_aux"]()
+            end
+        end
+        Env = nil
+        return
+    else
+
+    end
+
+end)
+
 game.Players.LocalPlayer.Chatted:Connect(
     function(msg)
         CommandHandler(msg, game.Players.LocalPlayer)
