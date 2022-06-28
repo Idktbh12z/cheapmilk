@@ -387,51 +387,45 @@ if TargetTable == nil then
 end
 local currenttext = ""
 if Toggle == true then
-    currenttext = "NoCooldown is now ON!"
-    for i, v in pairs(TargetTable) do
-        if typeof(v) == "table" and v["cooldown"] ~= nil then
-            for x, y in pairs(v) do
-                if string.find(tostring(x), "cooldown") and string.sub(x, #x - 2, -1) ~= "old" then
-                    if v[x .. "old"] == nil then
-                        v[x .. "old"] = v[x]
-                    end
-                    if v["kiramaxdamage"] ~= nil then
-                        if tostring(x) == "mincooldown" then
-                            v[x] = 0.1
-                        elseif tostring(x) == "cooldown" then
-                            v[x] = 1
+    if not game.Players.LocalPlayer.Character:FindFirstChild("current_perk").Value == "survival" then
+        currenttext = "NoCooldown is now ON!"
+        for i, v in pairs(TargetTable) do
+            if typeof(v) == "table" and v["cooldown"] ~= nil then
+                for x, y in pairs(v) do
+                    if string.find(tostring(x), "cooldown") and string.sub(x, #x - 2, -1) ~= "old" then
+                        if v[x .. "old"] == nil then
+                            v[x .. "old"] = v[x]
                         end
-                    else
-                        if v["inverse_cd"] == nil then
-                            v[x] = 0
+                        if v["kiramaxdamage"] ~= nil then
+                            if tostring(x) == "mincooldown" then
+                                v[x] = 0.1
+                            elseif tostring(x) == "cooldown" then
+                                v[x] = 1
+                            end
                         else
-                            v[x] = math.huge
+                            if v["inverse_cd"] == nil then
+                                v[x] = 0
+                            else
+                                v[x] = math.huge
+                            end
                         end
                     end
-                end
-                if
-                    x == "perk_mincd" or x == "vulka_ammo_usage" or string.find(tostring(x), "overheat") or
-                        x == "goggle_broken_cd" or
-                        x == "damage_taken_multi"
-                 then
-                    if v[x .. "old"] == nil and string.sub(x, #x - 2, -1) ~= "old" then
-                        v[x .. "old"] = v[x]
+                    if
+                        x == "perk_mincd" or x == "vulka_ammo_usage" or string.find(tostring(x), "overheat") or
+                            x == "goggle_broken_cd" or
+                            x == "damage_taken_multi"
+                     then
+                        if v[x .. "old"] == nil and string.sub(x, #x - 2, -1) ~= "old" then
+                            v[x .. "old"] = v[x]
+                        end
+                        v[x] = 0
                     end
-                    v[x] = 0
                 end
             end
         end
-    end
-else
-    currenttext = "NoCooldown is now OFF!"
-    for i, v in pairs(TargetTable) do
-        if typeof(v) == "table" and v["cooldown"] ~= nil then
-            for x, y in pairs(v) do
-                if string.sub(x, #x - 2, -1) ~= "old" and v[x .. "old"] ~= nil then
-                    v[x] = v[x .. "old"]
-                end
-            end
-        end
+    else
+        print("troll")
+        task.wait()
     end
 end
 game.StarterGui:SetCore(
@@ -493,8 +487,9 @@ game.StarterGui:SetCore(
     }
 )
 UIS.InputBegan:Connect(
-    function(input)
-        if input == Enum.KeyCode.M then
+    function(input, gameProcessedEvent)
+
+        if input.KeyCode == Enum.KeyCode.M and not gameProcessedEvent then
             if game.Players.LocalPlayer.Character == nil then
                 return
             end
@@ -513,8 +508,8 @@ UIS.InputBegan:Connect(
 )
 
 UIS.InputBegan:Connect(
-    function(input2)
-        if input2.KeyCode == Enum.KeyCode.L then
+    function(input2, gameProcessedEvent)
+        if input2.KeyCode == Enum.KeyCode.L and not gameProcessedEvent then
             local Toggle4 = true
             Toggles.InfAux = Toggle4
             local currenttext = ""
@@ -525,37 +520,26 @@ UIS.InputBegan:Connect(
                 Env["aux_usage"] = 1
                 currenttext = "InfAux is now OFF!"
             end
-            game.StarterGui:SetCore(
-                "SendNotification",
-                {
-                    Title = "notification",
-                    Text = currenttext,
-                    Icon = "rbxassetid://2541869220",
-                    Duration = 3
-                }
-            )
-        else
         end
     end
 )
 
-UIS.InputBegan:connect(function(input2)
-    if input2.KeyCode == Enum.KeyCode.C then
-        local Env = getsenv(GrabMainScript())
-        if Env["aux_usage"] ~= nil and Env["aux_usage"] <= 0 then
-            if Env["use_aux"] ~= nil then
-                Env["aux_usage"] = math.huge
-                wait()
-                Env["use_aux"]()
+UIS.InputBegan:connect(
+    function(input2, gameProcessedEvent)
+        if input2.KeyCode == Enum.KeyCode.C and not gameProcessedEvent then
+            local Env = getsenv(GrabMainScript())
+            if Env["aux_usage"] ~= nil and Env["aux_usage"] <= 0 then
+                if Env["use_aux"] ~= nil then
+                    Env["aux_usage"] = math.huge
+                    wait()
+                    Env["use_aux"]()
+                end
             end
+            Env = nil
+        else
         end
-        Env = nil
-        return
-    else
-
     end
-
-end)
+)
 
 game.Players.LocalPlayer.Chatted:Connect(
     function(msg)
