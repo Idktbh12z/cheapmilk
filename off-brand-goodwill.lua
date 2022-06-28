@@ -358,8 +358,6 @@ repeat
     wait()
 until game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame:FindFirstChild("Statuses")
 
-local CurrentPerkTroLL = game.Players.LocalPlayer.Character:WaitForChild("current_perk")
-
 if game.PlaceId ~= 9880062154 and not game.Workspace:FindFirstChild("HoldoutDecor") then
     repeat
         local Continue = false
@@ -390,7 +388,7 @@ game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses.ChildAdded:Conne
 
 UIS.InputBegan:Connect(
     function(input2, gameProcessedEvent)
-        if input2.KeyCode == Enum.KeyCode.P and not gameProcessedEvent and not Toggles.NoCooldown then
+        if input2.KeyCode == Enum.KeyCode.Nine and not gameProcessedEvent then
             local Toggle = true -- last second to default to true, rather than a toggle
             Toggles.NoCooldown = Toggle
             local Stats = require(game:GetService("Workspace").ServerStuff.Statistics["CLASS_STATISTICS"])
@@ -398,11 +396,14 @@ UIS.InputBegan:Connect(
             if TargetTable == nil then
                 return
             end
+            print("a")
             local currenttext = ""
             if Toggles.NoCooldown == true then
+                print("2")
                 if not game.Players.LocalPlayer.Character:FindFirstChild("current_perk").Value == "survival" then
                     currenttext = "NoCooldown is now ON!"
                     if Toggles.NoCooldown then
+                        print("1")
                         for i, v in pairs(TargetTable) do
                             if typeof(v) == "table" and v["cooldown"] ~= nil then
                                 for x, y in pairs(v) do
@@ -441,10 +442,20 @@ UIS.InputBegan:Connect(
                     end
                 else
                     currenttext = "lmfao bro tf you doing with survivalist and using nocooldown"
+                    Toggles.NoCooldown = false
                     print("troll")
                     task.wait()
                 end
             end
+            game.StarterGui:SetCore(
+                "SendNotification",
+                {
+                    Title = "notification",
+                    Text = currenttext,
+                    Icon = "rbxassetid://2541869220",
+                    Duration = 3
+                }
+            )
         end
     end
 )
@@ -567,16 +578,3 @@ game.Players.LocalPlayer.Chatted:Connect(
     end
 )
 game.Players.LocalPlayer.Character.Head.ChildAdded:Connect(RemoveMark)
-
-
-
-if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid").Health <= 0 then
-    Toggles.NoCooldown = false
-end
-
-
-CurrentPerkTroLL.Changed:Connect(function()
-if not CurrentPerkTroLL == CurrentPerkTroLL then
-Toggles.NoCooldown = false
-end
-end)
