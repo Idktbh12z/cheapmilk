@@ -400,7 +400,6 @@ UIS.InputBegan:Connect(
             local currenttext = ""
             if Toggles.NoCooldown == true then
                 print("2")
-                if not game.Players.LocalPlayer.Character:FindFirstChild("current_perk").Value == "survival" then
                     currenttext = "NoCooldown is now ON!"
                     if Toggles.NoCooldown then
                         print("1")
@@ -439,12 +438,6 @@ UIS.InputBegan:Connect(
                                 end
                             end
                         end
-                    end
-                else
-                    currenttext = "lmfao bro tf you doing with survivalist and using nocooldown"
-                    Toggles.NoCooldown = false
-                    print("troll")
-                    task.wait()
                 end
             end
             game.StarterGui:SetCore(
