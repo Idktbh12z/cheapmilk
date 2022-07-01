@@ -386,75 +386,78 @@ end
 
 game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses.ChildAdded:Connect(StatusAdded)
 
-local Toggle = true -- last second to default to true, rather than a toggle
-Toggles.NoCooldown = Toggle
-local Stats = require(game:GetService("Workspace").ServerStuff.Statistics["CLASS_STATISTICS"])
-local TargetTable = Stats[game.Players.LocalPlayer.Character:WaitForChild("current_perk").Value]
-if TargetTable == nil then
-    return
-end
-local currenttext = ""
-if Toggle == true then
-    currenttext = "NoCooldown is now ON!"
-    for i, v in pairs(TargetTable) do
-        if typeof(v) == "table" and v["cooldown"] ~= nil then
-            for x, y in pairs(v) do
-                if string.find(tostring(x), "cooldown") and string.sub(x, #x - 2, -1) ~= "old" then
-                    if v[x .. "old"] == nil then
-                        v[x .. "old"] = v[x]
-                    end
-                    if v["kiramaxdamage"] ~= nil then
-                        if tostring(x) == "mincooldown" then
-                            v[x] = 0.1
-                        elseif tostring(x) == "cooldown" then
-                            v[x] = 1
-                        end
-                    else
-                        if v["inverse_cd"] == nil then
-                            v[x] = 0
-                        else
-                            v[x] = math.huge
-                        end
-                    end
-                end
-                if
-                    x == "perk_mincd" or x == "vulka_ammo_usage" or string.find(tostring(x), "overheat") or
-                        x == "goggle_broken_cd" or
-                        x == "damage_taken_multi"
-                 then
-                    if v[x .. "old"] == nil and string.sub(x, #x - 2, -1) ~= "old" then
-                        v[x .. "old"] = v[x]
-                    end
-                    v[x] = 0
-                end
-            end
-        end
-    end
-else
-    currenttext = "NoCooldown is now OFF!"
-    for i, v in pairs(TargetTable) do
-        if typeof(v) == "table" and v["cooldown"] ~= nil then
-            for x, y in pairs(v) do
-                if string.sub(x, #x - 2, -1) ~= "old" and v[x .. "old"] ~= nil then
-                    v[x] = v[x .. "old"]
-                end
-            end
-        end
-    end
-end
-game.StarterGui:SetCore(
-    "SendNotification",
-    {
-        Title = "notification",
-        Text = currenttext,
-        Icon = "rbxassetid://2541869220",
-        Duration = 3
-    }
-)
 
 UIS.InputBegan:Connect(function(input, troll)
-    if input.KeyCode == Enum.KeyCode.Nine and not troll then
-        local Toggle1 = true -- last second to default to true, rather than a toggle
+if input.KeyCode == Enum.KeyCode.Nine and not troll then
+    local Toggle = true -- last second to default to true, rather than a toggle
+    Toggles.NoCooldown = Toggle
+    local Stats = require(game:GetService("Workspace").ServerStuff.Statistics["CLASS_STATISTICS"])
+    local TargetTable = Stats[game.Players.LocalPlayer.Character:WaitForChild("current_perk").Value]
+    if TargetTable == nil then
+        return
+    end
+    local currenttext = ""
+    if Toggle == true then
+        currenttext = "NoCooldown is now ON!"
+        for i, v in pairs(TargetTable) do
+            if typeof(v) == "table" and v["cooldown"] ~= nil then
+                for x, y in pairs(v) do
+                    if string.find(tostring(x), "cooldown") and string.sub(x, #x - 2, -1) ~= "old" then
+                        if v[x .. "old"] == nil then
+                            v[x .. "old"] = v[x]
+                        end
+                        if v["kiramaxdamage"] ~= nil then
+                            if tostring(x) == "mincooldown" then
+                                v[x] = 0.1
+                            elseif tostring(x) == "cooldown" then
+                                v[x] = 1
+                            end
+                        else
+                            if v["inverse_cd"] == nil then
+                                v[x] = 0
+                            else
+                                v[x] = math.huge
+                            end
+                        end
+                    end
+                    if
+                        x == "perk_mincd" or x == "vulka_ammo_usage" or string.find(tostring(x), "overheat") or
+                            x == "goggle_broken_cd" or
+                            x == "damage_taken_multi"
+                     then
+                        if v[x .. "old"] == nil and string.sub(x, #x - 2, -1) ~= "old" then
+                            v[x .. "old"] = v[x]
+                        end
+                        v[x] = 0
+                    end
+                end
+            end
+        end
+    else
+        currenttext = "NoCooldown is now OFF!"
+        for i, v in pairs(TargetTable) do
+            if typeof(v) == "table" and v["cooldown"] ~= nil then
+                for x, y in pairs(v) do
+                    if string.sub(x, #x - 2, -1) ~= "old" and v[x .. "old"] ~= nil then
+                        v[x] = v[x .. "old"]
+                    end
+                end
+            end
+        end
+    end
+    game.StarterGui:SetCore(
+        "SendNotification",
+        {
+            Title = "notification",
+            Text = currenttext,
+            Icon = "rbxassetid://2541869220",
+            Duration = 3
+        }
+    )
+end
+end)
+
+local Toggle1 = true -- last second to default to true, rather than a toggle
 Toggles.AntiDebuff = Toggle1
 local currenttext = ""
 if Toggle1 == true then
@@ -484,10 +487,6 @@ game.StarterGui:SetCore(
         Duration = 3
     }
 )
-    end
-    
-end)
-
 
 local Toggle2 = true -- last second to default to true, rather than a toggle
 Toggles.VirusBlock = Toggle2
