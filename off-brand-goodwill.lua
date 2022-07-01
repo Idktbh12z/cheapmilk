@@ -1,7 +1,3 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/cheapmilk/main/devmodule.lua", true))()
-
-
-
 local UIS = game:GetService("UserInputService")
 --
 --[[
