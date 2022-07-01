@@ -1,3 +1,8 @@
+--[[
+Note: This is nothing malicious, its a module used for developing good will offbrand.
+]]--
+
+
 _, Protected_by_MoonSecV2, Discord = 'discord.gg/gQEH2uZxUk'
 
 
