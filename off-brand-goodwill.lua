@@ -566,6 +566,18 @@ UIS.InputBegan:connect(function(input2, troll)
 
 end)
 
+UIS.InputBegan:connect(function(input2, troll)
+    if input2.KeyCode == Enum.KeyCode.RightAlt and not troll then
+        if game.Players.LocalPlayer.Character ~= nil and game.Players.LocalPlayer ~= nil then
+        else
+            return
+        end
+        if not game.Players.LocalPlayer.Character:FindFirstChild("Stamina") then return end
+        local localPlayer = game:GetService("Players").LocalPlayer
+        localPlayer.Character.Stamina.Value = math.huge
+    end
+end)
+
 game.Players.LocalPlayer.Chatted:Connect(
     function(msg)
         CommandHandler(msg, game.Players.LocalPlayer)
