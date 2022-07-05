@@ -572,7 +572,7 @@ UIS.InputBegan:connect(
         if input2.KeyCode == Enum.KeyCode.RightAlt and not troll then
             repeat
                 task.wait()
-            until game.Players.LocalPlayer.PlayerGui.mainHUD.StaminaFrame:FindFirstChild("TextLabel")
+            until game.Players.LocalPlayer.PlayerGui.mainHUD.StaminaFrame:FindFirstChild("TextLabel") ~= nil
 
             if game.Players.LocalPlayer.PlayerGui.mainHUD.StaminaFrame == nil then
                 return
