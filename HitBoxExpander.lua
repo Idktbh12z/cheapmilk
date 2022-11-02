@@ -29,7 +29,7 @@ for i, v in pairs(plrs:GetChildren()) do
             function()
                 repeat
                     task.wait()
-                until v.Character:FindFirstChild("HumanoidRootPart")
+                until v.Character and v.Character.HumanoidRootPart ~= nil
                 v:WaitForChild("HumanoidRootPart",10).CanCollide = false
                 v:WaitForChild("HumanoidRootPart",10).Size = Vector3.new(10, 10, 10)
                 v:WaitForChild("HumanoidRootPart",10).Transparency = 0.5
@@ -45,7 +45,7 @@ plrs.PlayerAdded:Connect(
         until player.Character ~= nil
         repeat
             task.wait()
-        until player.Character:FindFirstChild("HumanoidRootPart")
+        until v.Character and v.Character.HumanoidRootPart ~= nil
         v:WaitForChild("HumanoidRootPart",10).CanCollide = false
         v:WaitForChild("HumanoidRootPart",10).Size = Vector3.new(10, 10, 10)
         v:WaitForChild("HumanoidRootPart",10).Transparency = 0.5
@@ -53,7 +53,7 @@ plrs.PlayerAdded:Connect(
             function()
                 repeat
                     task.wait()
-                until player.Character:FindFirstChild("HumanoidRootPart")
+                until v.Character and v.Character.HumanoidRootPart ~= nil
                 v:WaitForChild("HumanoidRootPart",10).CanCollide = false
                 v:WaitForChild("HumanoidRootPart",10).Size = Vector3.new(10, 10, 10)
                 v:WaitForChild("HumanoidRootPart",10).Transparency = 0.5
