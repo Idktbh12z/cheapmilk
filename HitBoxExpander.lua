@@ -11,53 +11,14 @@ GMT.__index =
     end
 )
 
-local plrs = game:GetService("Players")
-for i, v in pairs(plrs:GetChildren()) do
-    if v == plrs.LocalPlayer then
-    else
+while task.wait(0.2) do
+for i,v in pairs(game.Players:GetChildren()) do
+    if v == game.Players.LocalPlayer then
+        else
         v = v.Character
-        v:WaitForChild("HumanoidRootPart",10).CanCollide = false
-        v:WaitForChild("HumanoidRootPart",10).Size = Vector3.new(10, 10, 10)
-        v:WaitForChild("HumanoidRootPart",10).Transparency = 0.5
+        v.HumanoidRootPart.CanCollide = false
+        v.HumanoidRootPart.Size = Vector3.new(10,10,10)
+        v.HumanoidRootPart.Transparency = 0.5
     end
 end
-
-for i, v in pairs(plrs:GetChildren()) do
-    if v == plrs.LocalPlayer then
-    else
-        v.CharacterAdded:connect(
-            function()
-                repeat
-                    task.wait()
-                until v.Character and v.Character.HumanoidRootPart ~= nil
-                v:WaitForChild("HumanoidRootPart",10).CanCollide = false
-                v:WaitForChild("HumanoidRootPart",10).Size = Vector3.new(10, 10, 10)
-                v:WaitForChild("HumanoidRootPart",10).Transparency = 0.5
-            end
-        )
-    end
 end
-
-plrs.PlayerAdded:Connect(
-    function(player)
-        repeat
-            task.wait()
-        until player.Character ~= nil
-        repeat
-            task.wait()
-        until v.Character and v.Character.HumanoidRootPart ~= nil
-        v:WaitForChild("HumanoidRootPart",10).CanCollide = false
-        v:WaitForChild("HumanoidRootPart",10).Size = Vector3.new(10, 10, 10)
-        v:WaitForChild("HumanoidRootPart",10).Transparency = 0.5
-        player.CharacterAdded:Connect(
-            function()
-                repeat
-                    task.wait()
-                until v.Character and v.Character.HumanoidRootPart ~= nil
-                v:WaitForChild("HumanoidRootPart",10).CanCollide = false
-                v:WaitForChild("HumanoidRootPart",10).Size = Vector3.new(10, 10, 10)
-                v:WaitForChild("HumanoidRootPart",10).Transparency = 0.5
-            end
-        )
-    end
-)
