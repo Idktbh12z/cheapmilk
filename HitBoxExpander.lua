@@ -11,8 +11,9 @@ GMT.__index =
     end
 )
 
-while task.wait(0.2) do
-for i,v in pairs(game.Players:GetChildren()) do
+game:GetService("RunService").RenderStepped:connect(function()
+    task.wait(0.2)
+    for i,v in pairs(game.Players:GetChildren()) do
     if v == game.Players.LocalPlayer then
         else
         v = v.Character
@@ -21,4 +22,5 @@ for i,v in pairs(game.Players:GetChildren()) do
         v.HumanoidRootPart.Transparency = 0.5
     end
 end
-end
+    
+end)
