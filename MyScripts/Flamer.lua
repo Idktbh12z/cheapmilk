@@ -1,5 +1,6 @@
         
-        
+        -- https://discord.com/channels/825324633079021578/988350086419451986/1048863969818968084 --
+        -- This script is not mine!!! --
         
         local perks = require(workspace.ServerStuff.Statistics["CLASS_STATISTICS"])["fire"].basestats
         local perk = require(workspace.ServerStuff.Statistics["CLASS_STATISTICS"])["fire"]
