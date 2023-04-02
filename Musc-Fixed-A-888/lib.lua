@@ -570,7 +570,7 @@ function Library:create(options)
 	end
 
 	closeButton.MouseButton1Click:connect(function()
-		closeUI()
+		--closeUI()
 	end)
 
 	local urlBar = core:object("Frame", {
