@@ -568,7 +568,7 @@ function Library:create(options)
 	if getgenv then
 		getgenv().MercuryUI = closeUI
 	end
-
+	closeButton.Visible = false
 	closeButton.MouseButton1Click:connect(function()
 		--closeUI()
 	end)
