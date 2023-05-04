@@ -568,9 +568,9 @@ function Library:create(options)
 	if getgenv then
 		getgenv().MercuryUI = closeUI
 	end
-	closeButton.Visible = false
+	closeButton.Visible = true
 	closeButton.MouseButton1Click:connect(function()
-		--closeUI()
+		closeUI()
 	end)
 
 	local urlBar = core:object("Frame", {
