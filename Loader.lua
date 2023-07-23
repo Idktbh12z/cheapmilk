@@ -9,6 +9,8 @@ elseif game.PlaceId == 8770868695 then -- AA
     loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Idktbh12z/cheapmilk/main/AA/Main.lua"))()
 elseif game.PlaceId == 6735572261 then -- Pilgrammed
     loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Idktbh12z/cheapmilk/main/Pilgrammed/Backup.lua"))()
+elseif game.PlaceId == 12604352060 then
+    loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/Idktbh12z/cheapmilk/main/ArcaneOdyssey/Main.lua"))()
 else
     return
 end
