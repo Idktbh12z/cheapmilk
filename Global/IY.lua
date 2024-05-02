@@ -11290,7 +11290,7 @@ addcmd('reach',{},function(args, speaker)
 				a.Parent = v.Handle
 				a.Adornee = v.Handle
 				v.Handle.Massless = true
-				v.Handle.Size = Vector3.new(0.5,0.5,args[1])
+				v.Handle.Size = Vector3.new(args[1], args[1] ,args[1])
 				v.GripPos = Vector3.new(0,0,0)
 				speaker.Character:FindFirstChildOfClass('Humanoid'):UnequipTools()
 			else
