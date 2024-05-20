@@ -12423,7 +12423,7 @@ IYMouse.Move:Connect(checkTT)
 task.spawn(function()
 	local success, latestVersionInfo = pcall(function() 
 		local versionJson = game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/version')
-		return HttpService:JSONDecode(versionJson)
+		return '5.9.4'
 	end)
 
 	if success then
