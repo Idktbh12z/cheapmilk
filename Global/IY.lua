@@ -11295,17 +11295,16 @@ addcmd('reach',{},function(args, speaker)
 			if args[1] then
 			if not v:FindFirstChild("Handle") then 
 				if v:FindFirstChild("HammerHead") or v:FindFirstChild("AxeHead") then
-					currentToolSize = v.HammerHead.Size or v.AxeHead.Size
+					local Hitbox = v:FindFirstChild("HammerHead") or v:FindFirstChild("AxeHead")
+					currentToolSize = Hitbox.Size
 					currentGripPos = v.GripPos
 					local a = Instance.new("SelectionBox")
 					a.Name = "SelectionBoxCreated"
-					a.Parent = v.HammerHead or v.AxeHead
-					a.Adornee = v.HammerHead or v.AxeHead
-					v.Handle.Massless = true
-					v.Handle.Size = Vector3.new(args[1],args[1],args[1])
+					a.Parent = Hitbox
+					a.Adornee = Hitbox
+					Hitbox.Massless = true
+					Hitbox.Size = Vector3.new(args[1],args[1],args[1])
 					speaker.Character:FindFirstChildOfClass('Humanoid'):UnequipTools()
-				else
-					return
 				end
 			else
 				currentToolSize = v.Handle.Size
