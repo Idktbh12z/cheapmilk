@@ -4,10 +4,8 @@ if IY_LOADED and not _G.IY_DEBUG == true then
 end
 
 pcall(function() getgenv().IY_LOADED = true end)
-
-local cloneref = cloneref or function(o) return o end
-COREGUI = cloneref(game:GetService("CoreGui"))
-Players = cloneref(game:GetService("Players"))
+COREGUI = game:GetService("CoreGui")
+Players = game:GetService("Players")
 
 if not game:IsLoaded() then
     local notLoaded = Instance.new("Message")
