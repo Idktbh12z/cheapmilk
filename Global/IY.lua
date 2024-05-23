@@ -8,8 +8,10 @@ if workspace.StreamingEnabled == true then
 end
 
 pcall(function() getgenv().IY_LOADED = true end)
-COREGUI = game:GetService("CoreGui")
-Players = game:GetService("Players")
+
+local cloneref = cloneref or function(o) return o end
+COREGUI = cloneref(game:GetService("CoreGui"))
+Players = cloneref(game:GetService("Players"))
 
 if not game:IsLoaded() then
     local notLoaded = Instance.new("Message")
