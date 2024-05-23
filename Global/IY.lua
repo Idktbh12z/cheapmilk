@@ -3,6 +3,10 @@ if IY_LOADED and not _G.IY_DEBUG == true then
     return
 end
 
+if workspace.StreamingEnabled == true then
+	workspace.StreamingEnabled = false
+end
+
 pcall(function() getgenv().IY_LOADED = true end)
 COREGUI = game:GetService("CoreGui")
 Players = game:GetService("Players")
