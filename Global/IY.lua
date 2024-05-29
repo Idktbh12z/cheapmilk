@@ -8,10 +8,8 @@ if workspace.StreamingEnabled == true then
 end
 
 pcall(function() getgenv().IY_LOADED = true end)
-
-local cloneref = cloneref or function(o) return o end
-COREGUI = cloneref(game:GetService("CoreGui"))
-Players = cloneref(game:GetService("Players"))
+COREGUI = game:GetService("CoreGui")
+Players = game:GetService("Players")
 
 if not game:IsLoaded() then
     local notLoaded = Instance.new("Message")
@@ -4705,6 +4703,7 @@ CMDs[#CMDs + 1] = {NAME = 'unremovespecifictool [name]', DESC = 'Stops removing 
 CMDs[#CMDs + 1] = {NAME = 'clearremovespecifictool', DESC = 'Stop removing all specific tools from your inventory'}
 CMDs[#CMDs + 1] = {NAME = 'reach [num]', DESC = 'Increases the hitbox of your held tool'}
 CMDs[#CMDs + 1] = {NAME = 'unreach / noreach', DESC = 'Turns off reach'}
+CMDs[#CMDs + 1] = {NAME = 'teleportchests [bordr]', DESC = 'Teleports coin chests.'}
 CMDs[#CMDs + 1] = {NAME = 'grippos [X Y Z]', DESC = 'Changes your current tools grip position'}
 CMDs[#CMDs + 1] = {NAME = 'usetools [ammount] [delay]', DESC = 'Activates all tools in your backpack at the same time'}
 CMDs[#CMDs + 1] = {NAME = '', DESC = ''}
@@ -6303,7 +6302,7 @@ local TeleportCheck = false
 Players.LocalPlayer.OnTeleport:Connect(function(State)
 	if KeepInfYield and (not TeleportCheck) and queueteleport then
 		TeleportCheck = true
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/Idktbh12z/cheapmilk/main/Global/IY.lua'))()")
+		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()")
 	end
 end)
 
@@ -9551,6 +9550,24 @@ end)
 
 addcmd("sit", {}, function(args, speaker)
 	speaker.Character:FindFirstChildWhichIsA("Humanoid").Sit = true
+end)
+
+addcmd("teleportchests", {}, function(args, speaker)
+	local Player = game:GetService("Players").LocalPlayer
+	local Character = Player.Character or Player.CharacterAdded:Wait()
+	local Workspace = game:GetService("Workspace")
+
+	Workspace.ChildAdded:Connect(function(Child)
+		if Child.Name ~= "TreasureChest" then return end
+		local Chest = Child
+		task.wait(0.1)
+		for _,Part in Chest:GetChildren() do
+			if not Part:IsA("BasePart") then continue end
+			Part.CFrame = Character:FindFirstChild("HumanoidRootPart").CFrame
+			Part.Anchored = true
+			Part.CanCollide = false
+		end
+	end)
 end)
 
 addcmd("lay", {"laydown"}, function(args, speaker)
