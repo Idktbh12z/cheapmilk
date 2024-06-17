@@ -11315,8 +11315,8 @@ addcmd('reach',{},function(args, speaker)
 		if v:IsA("Tool") then
 			if args[1] then
 			if not v:FindFirstChild("Handle") then 
-				if v:FindFirstChild("HammerHead") or v:FindFirstChild("AxeHead") then
-					local Hitbox = v:FindFirstChild("HammerHead") or v:FindFirstChild("AxeHead")
+				if v:FindFirstChild("HammerHead") or v:FindFirstChild("AxeHead") or v:FindFirstChild("Blade") then
+					local Hitbox = v:FindFirstChild("HammerHead") or v:FindFirstChild("AxeHead") or v:FindFirstChild("Blade")
 					currentToolSize = Hitbox.Size
 					currentGripPos = v.GripPos
 					local a = Instance.new("SelectionBox")
