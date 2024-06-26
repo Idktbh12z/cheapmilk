@@ -8339,7 +8339,7 @@ addcmd('copyfreecamposition',{'copyfcpos'},function(args, speaker)
 	if fcRunning then
 		local X,Y,Z = workspace.CurrentCamera.CFrame.Position.X,workspace.CurrentCamera.CFrame.Position.Y,workspace.CurrentCamera.CFrame.Position.Z
 		local Format, Round = string.format, math.round
-		toClipboard(Format("%s, %s, %s", Round(X), Round(Y), Round(Z)))
+		toClipboard(Format("%s %s %s", Round(X), Round(Y), Round(Z)))
 	end
 end)
 
