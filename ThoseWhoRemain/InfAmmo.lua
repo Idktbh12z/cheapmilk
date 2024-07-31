@@ -7,7 +7,9 @@ Interact.Update = function(Self, ...)
         local Weapon = Args[3][Args[1].Equipped]
         local WeaponStats = Args[1].WeaponModule.Stats
 
-        Weapon.Pool = WeaponStats.Pool
+        if WeaponStats.Pool then
+            Weapon.Pool = WeaponStats.Pool
+        end
 
         return OldInteractUpdate(Self, unpack(Args))
     end
