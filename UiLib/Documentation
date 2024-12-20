@@ -13,7 +13,6 @@ library:setTheme(theme, color)
 library:Notify(title, context)
     title <string> -> title of notification
     context <string> -> description of notification
-    callback <function> 
 
 library:SelectPage(page, toggle)
     page <table> -> page to edit
