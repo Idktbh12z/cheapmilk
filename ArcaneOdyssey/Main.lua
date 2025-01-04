@@ -1,7 +1,7 @@
 -- Licensed under CC BY-NC 4.0; no financial use allowed.
 
--- if getgenv().PMAO == true then return end
--- getgenv().PMAO = true
+if getgenv().PMAO == true then return end
+getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/cheapmilk/main/UiLib/Main.lua"))()
 local Veynx = lib.new("Snowy | Arcane Odyssey [DEV]")
