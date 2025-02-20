@@ -205,7 +205,7 @@ uiSecs.Misc:addButton("Fast cargo ship repair.", function()
 end)
 
 uiSecs.Misc:addButton("Quick clear notoriety.", function()
-    game:GetService("ReplicatedStorage"):WaitForChild("RS"):WaitForChild("Remotes"):WaitForChild("UI"):WaitForChild("ClearBounty"):InvokeServer("ClearNotoriety")
+    Remotes.UI.ClearBounty:InvokeServer("ClearNotoriety")
 end)
 
 uiSecs.Misc:addDropdown("Animation Packs", AnimationPacks, function(value)
