@@ -196,7 +196,7 @@ uiSecs.Misc:addButton("Fast cargo ship repair.", function()
         if NPC:FindFirstChildOfClass("Model") == nil then continue end
     
         local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
-        if Captain and Captain.Value == game.Players.LocalPlayer then
+        if Captain and Captain.Value == LocalPlayer then
             for i=1,100 do
                 Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
             end
