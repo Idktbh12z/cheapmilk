@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.1")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.2")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -14,6 +14,7 @@ local StarterGui = game:GetService("StarterGui")
 local Camera = workspace.CurrentCamera
 local Map = workspace:WaitForChild("Map", 10)
 local RS = game:GetService("ReplicatedStorage"):WaitForChild("RS",10)
+local Remotes = RS:WaitForChild("Remotes")
 local MagicModule = require(RS.Modules.Magic)
 local MeleeModule = require(RS.Modules.Melee)
 local BasicModule = require(RS.Modules.Basic)
@@ -170,7 +171,7 @@ uiSecs.ItemExploits:addButton("Quick fill empty bottles.", function(value)
     Humanoid:UnequipTools()
 
     for i = 1,100 do
-        game:GetService("ReplicatedStorage").RS.Remotes.Misc.EmptyBottle:FireServer()
+        Remotes.Misc.EmptyBottle:FireServer()
     end
 
     task.delay(1, function()
@@ -185,6 +186,22 @@ end)
 
 uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/ArcaneYIELD/refs/heads/main/main.lua"))()
+end)
+
+uiSecs.Misc:addButton("Fast cargo ship repair.", function()
+    Veynx:Notify("Warning!", "You need atleast 2 cargo and Edward Kenton for this to work. \n Tier/upgrades do not matter.")
+
+    for _, NPC in workspace.NPCs:GetChildren() do
+        if NPC.Name ~= "Edward Kenton" and NPC.Name ~= "Edward Kenton2" then continue end
+        if NPC:FindFirstChildOfClass("Model") == nil then continue end
+    
+        local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
+        if Captain and Captain.Value == game.Players.LocalPlayer then
+            for i=1,100 do
+                Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
+            end
+        end
+    end
 end)
 
 uiSecs.Misc:addButton("Quick clear notoriety.", function()
@@ -310,7 +327,7 @@ UserInputService.InputBegan:connect(function(Input, IsChatBox)
     if var["DrinkBottleSilent"] ~= true then return end
 
     if Input.KeyCode == Enum.KeyCode.Period then
-        game:GetService("ReplicatedStorage"):WaitForChild("RS"):WaitForChild("Remotes"):WaitForChild("Misc"):WaitForChild("EmptyBottle"):FireServer(true)
+        Remotes.Misc.EmptyBottle:FireServer(true)
     end
 end)
 
