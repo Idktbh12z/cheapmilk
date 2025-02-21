@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.2")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.3")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -437,7 +437,7 @@ task.spawn(function()
             if args[2] == LocalPlayer.Character then
                 args[2] = nil
             end
-        elseif not checkcaller() and (tostring(self) == "DealWeaponDamage" or tostring(self) == "DealStrengthDamage") and var["godmode"] then
+        elseif not checkcaller() and (tostring(self) == "DealWeaponDamage" or tostring(self) == "DealStrengthDamage" ) and args[5] ~= "Attack" and var["godmode"] then
             if args[3] == LocalPlayer.Character then
                 args[3] = nil
             end
