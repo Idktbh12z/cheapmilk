@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.4")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.4.1")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -11,28 +11,20 @@ local Lighting = game:GetService("Lighting")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
-local Camera = workspace.CurrentCamera
 local Map = workspace:WaitForChild("Map", 10)
+
 local RS = game:GetService("ReplicatedStorage"):WaitForChild("RS",10)
 local Remotes = RS:WaitForChild("Remotes")
+
 local MagicModule = require(RS.Modules.Magic)
 local MeleeModule = require(RS.Modules.Melee)
 local BasicModule = require(RS.Modules.Basic)
 
 local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
 
-local TpDebounce = false
-local FillDebounce = false
-local RanConnectGodmode = false
-local ModifiedMagic = nil
-local ModifiedMelee = nil
-local AnimationPack = nil
+local TpDebounce, FillDebounce, ModifiedMagic, ModifiedMelee = false, false, nil, nil
 
-local DropdownTpList = {}
-local MagicList = {}
-local MeleeList = {}
-local DeathScreenConnections = {}
+local DropdownTpList, MagicList, MeleeList = {}, {}, {}
 
 task.spawn(function()
     while task.wait(1) do
