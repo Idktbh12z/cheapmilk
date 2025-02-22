@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.3")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.4")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -193,7 +193,7 @@ uiSecs.Misc:addButton("Fast cargo ship repair.", function()
 
     for _, NPC in workspace.NPCs:GetChildren() do
         if NPC.Name ~= "Edward Kenton" and NPC.Name ~= "Edward Kenton2" then continue end
-        if NPC.Name ~= "Enizor" and NPC.Name ~= "Enizor2" then continue end
+        if NPC.Name ~= "Enizor" and NPC.Name ~= "Enizor2" and NPC.Name ~= "EnizorC" then continue end
         if NPC:FindFirstChildOfClass("Model") == nil then continue end
     
         local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
