@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.3")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.4")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -190,15 +190,17 @@ end)
 
 uiSecs.Misc:addButton("Fast cargo ship repair.", function()
     Veynx:Notify("Warning!", "You need atleast 2 cargo and Edward Kenton for this to work. \n Tier/upgrades do not matter.")
-
-    for _, NPC in workspace.NPCs:GetChildren() do
-        if NPC.Name ~= "Edward Kenton" and NPC.Name ~= "Edward Kenton2" then continue end
-        if NPC:FindFirstChildOfClass("Model") == nil then continue end
     
-        local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
-        if Captain and Captain.Value == LocalPlayer then
-            for i=1,100 do
-                Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
+    for _, NPC in workspace.NPCs:GetChildren() do
+        if NPC.Name == "Edward Kenton" or NPC.Name == "Edward Kenton2" or NPC.Name == "Enizor" or NPC.Name == "Enizor2" then
+            if NPC:FindFirstChildOfClass("Model") then
+                local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
+                if Captain and Captain.Value == LocalPlayer then
+                    for i=1,100 do
+                        Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
+                    end
+                    break
+                end
             end
         end
     end
@@ -412,10 +414,6 @@ task.spawn(function()
 
         if not checkcaller() and table.find(remotes, tostring(self)) and var["dmgValue"] then
             for i = 1, var["dmgMulti"] do
-
-                if (args[2] ~= nil and args[2] == LocalPlayer.Character) then return damageHook(self, unpack(args)) end
-                if (args[3] ~= nil and args[3] == LocalPlayer.Character) and args[5] ~= "Attack" then return damageHook(self, unpack(args)) end
-
                 self.FireServer(self, unpack(args))
             end
         end
@@ -437,10 +435,12 @@ task.spawn(function()
             if args[2] == LocalPlayer.Character then
                 args[2] = nil
             end
-        elseif not checkcaller() and (tostring(self) == "DealWeaponDamage" or tostring(self) == "DealStrengthDamage" ) and args[5] ~= "Attack" and var["godmode"] then
+        elseif not checkcaller() and (tostring(self) == "DealWeaponDamage" or tostring(self) == "DealStrengthDamage" ) and var["godmode"] then
             if args[3] == LocalPlayer.Character then
                 args[3] = nil
             end
+        elseif not checkcaller() and (tostring(self) == "TouchDamage") and var["godmode"] then
+            return
         end
 
         return godHook(self, unpack(args))
