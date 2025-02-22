@@ -181,11 +181,6 @@ uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/ArcaneYIELD/refs/heads/main/main.lua"))()
 end)
 
-uiSecs.Discord:addButton("Join our discord!", function()
-    local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Discord%20Inviter/Source.lua"))()
-    Module.Join("https://discord.gg/3jtCm4M5pq")
-end)
-
 uiSecs.Misc:addButton("Fast cargo ship repair.", function()
     Veynx:Notify("Warning!", "You need at least 2 cargo for this to work.\nTier/upgrades do not matter.")
 
@@ -214,6 +209,11 @@ uiSecs.Misc:addDropdown("Animation Packs", AnimationPacks, function(value)
         return tostring(value)
     end
     Veynx:Notify("Warning!", "This wont apply until you reset.")
+end)
+
+uiSecs.Discord:addButton("Join our discord!", function()
+    local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Discord%20Inviter/Source.lua"))()
+    Module.Join("https://discord.gg/3jtCm4M5pq")
 end)
 
 uiSecs.TP:addDropdown("Teleports", DropdownTpList, function(value)
