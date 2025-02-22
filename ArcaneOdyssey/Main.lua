@@ -414,7 +414,7 @@ task.spawn(function()
             for i = 1, var["dmgMulti"] do
 
                 if (args[2] ~= nil and args[2] == LocalPlayer.Character) then return damageHook(self, unpack(args)) end
-                if (args[3] ~= nil and args[3] == LocalPlayer.Character) then return damageHook(self, unpack(args)) end
+                if (args[3] ~= nil and args[3] == LocalPlayer.Character) and args[5] ~= "Attack" then return damageHook(self, unpack(args)) end
 
                 self.FireServer(self, unpack(args))
             end
