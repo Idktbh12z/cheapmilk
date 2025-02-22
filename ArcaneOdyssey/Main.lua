@@ -201,6 +201,7 @@ uiSecs.Misc:addButton("Fast cargo ship repair.", function()
                 for i=1, 100 do
                     Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
                 end
+                break
             end
         end
     end
