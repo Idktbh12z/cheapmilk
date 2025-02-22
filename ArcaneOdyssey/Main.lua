@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.4")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.3")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -190,18 +190,18 @@ end)
 
 uiSecs.Misc:addButton("Fast cargo ship repair.", function()
     Veynx:Notify("Warning!", "You need atleast 2 cargo and Edward Kenton for this to work. \n Tier/upgrades do not matter.")
-    
+
     for _, NPC in workspace.NPCs:GetChildren() do
-        if NPC.Name == "Edward Kenton" or NPC.Name == "Edward Kenton2" or NPC.Name == "Enizor" or NPC.Name == "Enizor2" then
-            if NPC:FindFirstChildOfClass("Model") then
-                local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
-                if Captain and Captain.Value == LocalPlayer then
-                    for i=1,100 do
-                        Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
-                    end
-                    break
-                end
+        if NPC.Name ~= "Edward Kenton" and NPC.Name ~= "Edward Kenton2" then continue end
+        if NPC.Name ~= "Enizor" and NPC.Name ~= "Enizor2" then continue end
+        if NPC:FindFirstChildOfClass("Model") == nil then continue end
+    
+        local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
+        if Captain and Captain.Value == LocalPlayer then
+            for i=1,100 do
+                Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
             end
+            break
         end
     end
 end)
