@@ -189,19 +189,19 @@ uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
 end)
 
 uiSecs.Misc:addButton("Fast cargo ship repair.", function()
-    Veynx:Notify("Warning!", "You need atleast 2 cargo and Edward Kenton for this to work. \n Tier/upgrades do not matter.")
+    Veynx:Notify("Warning!", "You need at least 2 cargo and Edward Kenton for this to work. \nTier/upgrades do not matter.")
 
     for _, NPC in workspace.NPCs:GetChildren() do
-        if NPC.Name ~= "Edward Kenton" and NPC.Name ~= "Edward Kenton2" then continue end
-        if NPC.Name ~= "Enizor" and NPC.Name ~= "Enizor2" and NPC.Name ~= "EnizorC" then continue end
-        if NPC:FindFirstChildOfClass("Model") == nil then continue end
-    
-        local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
-        if Captain and Captain.Value == LocalPlayer then
-            for i=1,100 do
-                Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
+        if (NPC.Name == "Edward Kenton" or NPC.Name == "Edward Kenton2") or
+           (NPC.Name == "Enizor" or NPC.Name == "Enizor2" or NPC.Name == "EnizorC") then
+            if NPC:FindFirstChildOfClass("Model") == nil then continue end
+
+            local Captain = NPC:FindFirstChildOfClass("Model"):FindFirstChild("Captain")
+            if Captain and Captain.Value == LocalPlayer then
+                for i=1, 100 do
+                    Remotes.Boats.UnloadShip:FireServer(Captain.Parent, "Repair", "Use as much as possible.")
+                end
             end
-            break
         end
     end
 end)
