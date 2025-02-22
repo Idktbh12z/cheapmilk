@@ -189,7 +189,7 @@ uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
 end)
 
 uiSecs.Misc:addButton("Fast cargo ship repair.", function()
-    Veynx:Notify("Warning!", "You need at least 2 cargo and Edward Kenton for this to work. \nTier/upgrades do not matter.")
+    Veynx:Notify("Warning!", "You need at least 2 cargo for this to work.\nTier/upgrades do not matter.")
 
     for _, NPC in workspace.NPCs:GetChildren() do
         if (NPC.Name == "Edward Kenton" or NPC.Name == "Edward Kenton2") or
