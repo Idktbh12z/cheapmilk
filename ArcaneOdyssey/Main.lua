@@ -110,6 +110,7 @@ uiSecs.UI = uiPages.Main:addSection("UI")
 uiSecs.TP = uiPages.Travel:addSection("Teleports")
 
 uiSecs.Misc = uiPages.Misc:addSection("Misc")
+uiSecs.Discord = uiPages.Misc:addSection("Discord")
 
 uiSecs.BoatExploits = uiPages.Exploits:addSection("Boat Exploits")
 uiSecs.ItemExploits = uiPages.Exploits:addSection("Item Exploits")
@@ -186,6 +187,11 @@ end)
 
 uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/ArcaneYIELD/refs/heads/main/main.lua"))()
+end)
+
+uiSecs.Discord:addButton("Join our discord!", function()
+    local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Discord%20Inviter/Source.lua"))()
+    Module.Join("https://discord.gg/3jtCm4M5pq")
 end)
 
 uiSecs.Misc:addButton("Fast cargo ship repair.", function()
@@ -476,10 +482,4 @@ task.spawn(function()
 
         return RepairHook(self, unpack(args))
     end))
-end)
-
-task.spawn(function()
-    local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Discord%20Inviter/Source.lua"))()
-    
-    Module.Prompt({ invite = "https://discord.gg/3jtCm4M5pq", name = "Snowy's AO Script" })
 end)
