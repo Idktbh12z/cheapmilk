@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.4.1")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.5")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -12,6 +12,7 @@ local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 
 local Map = workspace:WaitForChild("Map", 10)
+local NPCs = workspace:WaitForChild("NPCs")
 
 local RS = game:GetService("ReplicatedStorage"):WaitForChild("RS",10)
 local Remotes = RS:WaitForChild("Remotes")
@@ -21,10 +22,32 @@ local MeleeModule = require(RS.Modules.Melee)
 local BasicModule = require(RS.Modules.Basic)
 
 local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
 local TpDebounce, FillDebounce, ModifiedMagic, ModifiedMelee = false, false, nil, nil
 
 local DropdownTpList, MagicList, MeleeList = {}, {}, {}
+
+local function GetClosestNPC()
+    local closestNPC = nil
+    local shortestDistance = math.huge
+
+    for _, NPC in NPCs:GetChildren() do
+        local NPCModel = NPC:FindFirstChildOfClass("Model")
+        if not NPCModel then continue end
+
+        local HumanoidRootPart = NPCModel:FindFirstChild("HumanoidRootPart")
+        if not HumanoidRootPart then continue end
+
+        local distance = (Character.HumanoidRootPart.Position - HumanoidRootPart.Position).Magnitude
+        if distance < shortestDistance then
+            shortestDistance = distance
+            closestNPC = HumanoidRootPart
+        end
+    end
+
+    return closestNPC
+end
 
 task.spawn(function()
     while task.wait(1) do
@@ -83,7 +106,9 @@ local var = {
     OneTapStructure = false,
     QuickFillBottles = false,
     ToggleLightning = false,
-    DrinkBottleSilent = false
+    DrinkBottleSilent = false,
+    NPCSilentAim = false,
+    AutoFish = false
 }
 
 local uiPages = {}
@@ -96,6 +121,7 @@ uiPages.Misc = Veynx:addPage("Misc")
 
 uiSecs.Godmode = uiPages.Main:addSection("Godmode")
 uiSecs.dmgExploits = uiPages.Main:addSection("Damage Exploits")
+uiSecs.AutoFishing = uiPages.Main:addSection("Auto Fish")
 uiSecs.NPCE = uiPages.Main:addSection("NPC Exploits")
 uiSecs.UI = uiPages.Main:addSection("UI")
 
@@ -116,6 +142,10 @@ end)
 
 uiSecs.NPCE:addToggle("No NPC Aggro.", false, function(value)
     var["NPCBlock"] = value
+end)
+
+uiSecs.NPCE:addToggle("NPC Silent aim.", false, function(value)
+    var["NPCSilentAim"] = value
 end)
 
 uiSecs.PlayerExploits:addToggle("No location tracking.", false, function(value)
@@ -150,6 +180,10 @@ end)
 
 uiSecs.MagicExploits:addToggle("One tap buildings/structures.", false, function(value)
     var["OneTapStructure"] = value
+end)
+
+uiSecs.AutoFishing:addToggle("Auto fish toggle.", false, function(value)
+    var["AutoFish"] = value
 end)
 
 uiSecs.UI:addKeybind("Toggle UI.", Enum.KeyCode.Equals, function(value)
@@ -335,6 +369,19 @@ end)
 -- End
 
 task.spawn(function()
+    Character.ChildAdded:connect(function(Child)
+        if var["AutoFish"] == false then return end
+        if Child.Name ~= "FishBiteGoal" then return end
+
+        repeat Remotes.Misc.ToolAction:FireServer(Character:FindFirstChildOfClass("Tool")) task.wait(0.1) until Child.Parent == nil
+
+        task.delay(math.random(2,4), function()
+            Remotes.Misc.ToolAction:FireServer(Character:FindFirstChildOfClass("Tool"))
+        end)
+    end)
+end)
+
+task.spawn(function()
     local StaminaHook
     StaminaHook = hookmetamethod(game, "__namecall", newcclosure(function(self,...)
         local args = { ... }
@@ -347,6 +394,24 @@ task.spawn(function()
         end
 
         return StaminaHook(self,unpack(args))
+    end))
+end)
+
+task.spawn(function()
+    local NPCSilentAim
+    NPCSilentAim = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+        local args = { ... }
+        local method = getnamecallmethod()
+
+        if not checkcaller() and tostring(self) == "MousePosUpdate" and method == "FireServer" and var["NPCSilentAim"] == true then
+            local CloseNPC = GetClosestNPC()
+            if CloseNPC == nil then
+                return NPCSilentAim(self, unpack(args))
+            end
+            args[1] = CloseNPC.Position
+        end
+
+        return NPCSilentAim(self, unpack(args))
     end))
 end)
 
