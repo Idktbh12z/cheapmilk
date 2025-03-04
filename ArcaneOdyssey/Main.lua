@@ -10,10 +10,10 @@ local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
-local CurrentCamera = Workspace.Currentcamera
+local CurrentCamera = Workspace.CurrentCamera
 
 local Map = Workspace:WaitForChild("Map", 10)
-local DarkSeaFolder = Map.SeaContent:WaitForChild("DarkSea")
+local DarkSeaFolder = Map.SeaContent:WaitForChild("DarkSea",10)
 local NPCs = Workspace:WaitForChild("NPCs")
 
 local RS = game:GetService("ReplicatedStorage"):WaitForChild("RS",10)
@@ -204,8 +204,9 @@ end)
 uiSecs.DSE:addButton("Disable fog circle.", function()
     local Sky1 = LocalPlayer.PlayerGui.Temp.DarkSea:FindFirstChild("DarkSky1")
     local Sky2 = LocalPlayer.PlayerGui.Temp.DarkSea:FindFirstChild("DarkSky2")
+
     if not Sky1 then return end
-    if not Sky2 then retrun end
+    if not Sky2 then return end
     Sky1:FindFirstChildOfClass("SpecialMesh"):Destroy()
     Sky2:FindFirstChildOfClass("SpecialMesh"):Destroy()
 
