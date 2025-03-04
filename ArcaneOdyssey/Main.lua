@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.5.2 [TEST]")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.6 [TEST]")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -10,9 +10,11 @@ local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
+local CurrentCamera = Workspace.Currentcamera
 
-local Map = workspace:WaitForChild("Map", 10)
-local NPCs = workspace:WaitForChild("NPCs")
+local Map = Workspace:WaitForChild("Map", 10)
+local DarkSeaFolder = Map.SeaContent:WaitForChild("DarkSea")
+local NPCs = Workspace:WaitForChild("NPCs")
 
 local RS = game:GetService("ReplicatedStorage"):WaitForChild("RS",10)
 local Remotes = RS:WaitForChild("Remotes")
@@ -48,24 +50,6 @@ local function GetClosestNPC()
 
     return closestNPC
 end
-
-task.spawn(function()
-    while task.wait(1) do
-        for _,Player in ReplicatedStorage.RS.UnloadPlayers:GetChildren() do
-            Player.Parent = game.Workspace.NPCs
-        end
-    end
-end)
-
-task.spawn(function()
-    while task.wait(1) do
-        for _,Instance in LocalPlayer.PlayerGui:GetChildren() do
-            if Instance.Name:lower() == "deathscreen" then
-                Instance.Enabled = false
-            end
-        end
-    end
-end)
 
 local remotes = {
     "DealAttackDamage",
@@ -110,6 +94,7 @@ local var = {
     NPCSilentAim = false,
     AutoFish = false,
     AutoWash = false,
+    HecateNotifier = false,
 }
 
 local uiPages = {}
@@ -209,17 +194,33 @@ uiSecs.ItemExploits:addButton("Quick fill empty bottles.", function(value)
     end)
 end)
 
-uiSecs.DSE:addButton("Disable dark sea rain.", function(value)
-    workspace.Camera:WaitForChild("OverheadFX",10).DSRain.Lifetime = NumberRange.new(0,0)
-    workspace.Camera:WaitForChild("OverheadFX",10).DSRain2.Lifetime = NumberRange.new(0,0)
+uiSecs.DSE:addButton("Disable dark sea rain.", function()
+    Workspace.Camera:WaitForChild("OverheadFX",10).DSRain.Lifetime = NumberRange.new(0,0)
+    Workspace.Camera:WaitForChild("OverheadFX",10).DSRain2.Lifetime = NumberRange.new(0,0)
 
     Veynx:Notify("Warning!", "Once you die you need to re-toggle this.")
+end)
+
+uiSecs.DSE:addButton("Disable fog circle.", function()
+    local Sky1 = LocalPlayer.PlayerGui.Temp.DarkSea:FindFirstChild("DarkSky1")
+    local Sky2 = LocalPlayer.PlayerGui.Temp.DarkSea:FindFirstChild("DarkSky2")
+    if not Sky1 then return end
+    if not Sky2 then retrun end
+    Sky1:FindFirstChildOfClass("SpecialMesh"):Destroy()
+    Sky2:FindFirstChildOfClass("SpecialMesh"):Destroy()
+
+    local CSky1 = CurrentCamera:FindFirstChild("DarkSky1")
+    local CSky2 = CurrentCamera:FindFirstChild("DarkSky2")
+    if not CSky1 then return end
+    if not CSky2 then return end
+    CSky1:FindFirstChildOfClass("SpecialMesh"):Destroy()
+    CSky2:FindFirstChildOfClass("SpecialMesh"):Destroy()
 end)
 
 uiSecs.DSE:addButton("Fast cargo ship repair.", function()
     Veynx:Notify("Warning!", "You need at least 1 cargo for this to work.\nTier/upgrades do not matter.")
 
-    for _, NPC in workspace.NPCs:GetChildren() do
+    for _, NPC in Workspace.NPCs:GetChildren() do
         if (NPC.Name == "Edward Kenton" or NPC.Name == "Edward Kenton2") or
            (NPC.Name == "Enizor" or NPC.Name == "Enizor2" or NPC.Name == "EnizorC") then
             if NPC:FindFirstChildOfClass("Model") == nil then continue end
@@ -237,6 +238,10 @@ end)
 
 uiSecs.DSE:addToggle("Toggle auto wash bin.", false, function(value)
     var["AutoWash"] = value
+end)
+
+uiSecs.DSE:addToggle("Hecate essence notifier.", false, function(value)
+    var["HecateNotifier"] = value
 end)
 
 uiSecs.PlayerExploits:addButton("Toggle insanity effects.", function(value)
@@ -398,6 +403,46 @@ end)
 task.spawn(function()
     while task.wait(3) do
         if var["AutoWash"] == true then Remotes.Boats.Wash:FireServer() end
+    end
+end)
+
+task.spawn(function()
+    while task.wait(5) do
+        if var["HecateNotifier"] == true then 
+            for _,Child in DarkSeaFolder:GetChildren() do
+                if Child.Name ~= "Island" then continue end
+
+                if Child:FindFirstChild("HecateEssence") then
+                    StarterGui:SetCore("SendNotification", {
+                        Title = "Hecate found!";
+                        Text = "Click the button below to teleport.";
+                        Duration = 5;
+                        Button1 = "Teleport";
+                        Callback = function()
+                            LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = Child.CFrame
+                        end;
+                    })
+                end
+            end
+        end
+    end
+end)
+
+task.spawn(function()
+    while task.wait(1) do
+        for _,Player in ReplicatedStorage.RS.UnloadPlayers:GetChildren() do
+            Player.Parent = game.Workspace.NPCs
+        end
+    end
+end)
+
+task.spawn(function()
+    while task.wait(1) do
+        for _,Instance in LocalPlayer.PlayerGui:GetChildren() do
+            if Instance.Name:lower() == "deathscreen" then
+                Instance.Enabled = false
+            end
+        end
     end
 end)
 
