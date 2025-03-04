@@ -216,10 +216,6 @@ uiSecs.DSE:addButton("Disable dark sea rain.", function(value)
     Veynx:Notify("Warning!", "Once you die you need to re-toggle this.")
 end)
 
-uiSecs.DSE:addToggle("Toggle auto wash bin.", false, function(value)
-    var["AutoWash"] = value
-end)
-
 uiSecs.DSE:addButton("Fast cargo ship repair.", function()
     Veynx:Notify("Warning!", "You need at least 1 cargo for this to work.\nTier/upgrades do not matter.")
 
@@ -237,6 +233,10 @@ uiSecs.DSE:addButton("Fast cargo ship repair.", function()
             end
         end
     end
+end)
+
+uiSecs.DSE:addToggle("Toggle auto wash bin.", false, function(value)
+    var["AutoWash"] = value
 end)
 
 uiSecs.PlayerExploits:addButton("Toggle insanity effects.", function(value)
