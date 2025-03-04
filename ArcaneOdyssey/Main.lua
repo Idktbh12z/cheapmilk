@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.5")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.5.2 [TEST]")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -108,7 +108,8 @@ local var = {
     ToggleLightning = false,
     DrinkBottleSilent = false,
     NPCSilentAim = false,
-    AutoFish = false
+    AutoFish = false,
+    AutoWash = false,
 }
 
 local uiPages = {}
@@ -116,6 +117,7 @@ local uiSecs = {}
 
 uiPages.Main = Veynx:addPage("Main")
 uiPages.Exploits = Veynx:addPage("Exploits")
+uiPages.DSExploits = Veynx:addPage("Dark Sea")
 uiPages.Travel = Veynx:addPage("Teleports")
 uiPages.Misc = Veynx:addPage("Misc")
 
@@ -123,6 +125,7 @@ uiSecs.Godmode = uiPages.Main:addSection("Godmode")
 uiSecs.dmgExploits = uiPages.Main:addSection("Damage Exploits")
 uiSecs.AutoFishing = uiPages.Main:addSection("Auto Fish")
 uiSecs.NPCE = uiPages.Main:addSection("NPC Exploits")
+uiSecs.DSE = uiPages.DSExploits:addSection("Dark sea exploits")
 uiSecs.UI = uiPages.Main:addSection("UI")
 
 uiSecs.TP = uiPages.Travel:addSection("Teleports")
@@ -206,17 +209,19 @@ uiSecs.ItemExploits:addButton("Quick fill empty bottles.", function(value)
     end)
 end)
 
-uiSecs.PlayerExploits:addButton("Toggle insanity effects.", function(value)
-    local InsanityLocalScript = LocalPlayer.PlayerGui:WaitForChild("Temp",10):FindFirstChild("Insanity")
-    InsanityLocalScript.Disabled = not InsanityLocalScript.Disabled
+uiSecs.DSE:addButton("Disable dark sea rain.", function(value)
+    workspace.Camera:WaitForChild("OverheadFX",10).DSRain.Lifetime = NumberRange.new(0,0)
+    workspace.Camera:WaitForChild("OverheadFX",10).DSRain2.Lifetime = NumberRange.new(0,0)
+
+    Veynx:Notify("Warning!", "Once you die you need to re-toggle this.")
 end)
 
-uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/ArcaneYIELD/refs/heads/main/main.lua"))()
+uiSecs.DSE:addToggle("Toggle auto wash bin.", false, function(value)
+    var["AutoWash"] = value
 end)
 
-uiSecs.Misc:addButton("Fast cargo ship repair.", function()
-    Veynx:Notify("Warning!", "You need at least 2 cargo for this to work.\nTier/upgrades do not matter.")
+uiSecs.DSE:addButton("Fast cargo ship repair.", function()
+    Veynx:Notify("Warning!", "You need at least 1 cargo for this to work.\nTier/upgrades do not matter.")
 
     for _, NPC in workspace.NPCs:GetChildren() do
         if (NPC.Name == "Edward Kenton" or NPC.Name == "Edward Kenton2") or
@@ -232,6 +237,15 @@ uiSecs.Misc:addButton("Fast cargo ship repair.", function()
             end
         end
     end
+end)
+
+uiSecs.PlayerExploits:addButton("Toggle insanity effects.", function(value)
+    local InsanityLocalScript = LocalPlayer.PlayerGui:WaitForChild("Temp",10):FindFirstChild("Insanity")
+    InsanityLocalScript.Disabled = not InsanityLocalScript.Disabled
+end)
+
+uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/ArcaneYIELD/refs/heads/main/main.lua"))()
 end)
 
 uiSecs.Misc:addButton("Quick clear notoriety.", function()
@@ -379,6 +393,12 @@ task.spawn(function()
             Remotes.Misc.ToolAction:FireServer(Character:FindFirstChildOfClass("Tool"))
         end)
     end)
+end)
+
+task.spawn(function()
+    while task.wait(3) do
+        if var["AutoWash"] == true then Remotes.Boats.Wash:FireServer() end
+    end
 end)
 
 task.spawn(function()
