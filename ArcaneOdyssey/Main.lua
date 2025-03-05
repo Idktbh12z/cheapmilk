@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.6 [TEST]")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.6.1")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -18,6 +18,7 @@ local NPCs = Workspace:WaitForChild("NPCs")
 
 local RS = game:GetService("ReplicatedStorage"):WaitForChild("RS",10)
 local Remotes = RS:WaitForChild("Remotes")
+local TeleportBind = Instance.new("BindableFunction")
 
 local MagicModule = require(RS.Modules.Magic)
 local MeleeModule = require(RS.Modules.Melee)
@@ -26,7 +27,7 @@ local BasicModule = require(RS.Modules.Basic)
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-local TpDebounce, FillDebounce, ModifiedMagic, ModifiedMelee = false, false, nil, nil
+local TpDebounce, FillDebounce, ModifiedMagic, ModifiedMelee, HecatePart = false, false, nil, nil, nil
 
 local DropdownTpList, MagicList, MeleeList = {}, {}, {}
 
@@ -412,20 +413,27 @@ task.spawn(function()
         if var["HecateNotifier"] == true then 
             for _,Child in DarkSeaFolder:GetChildren() do
                 if Child.Name ~= "Island" then continue end
+                if not Child:FindFirstChild("HecateEssence") then continue end
 
-                if Child:FindFirstChild("HecateEssence") then
-                    StarterGui:SetCore("SendNotification", {
-                        Title = "Hecate found!";
-                        Text = "Click the button below to teleport.";
-                        Duration = 5;
-                        Button1 = "Teleport";
-                        Callback = function()
-                            LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = Child.CFrame
-                        end;
-                    })
-                end
+                StarterGui:SetCore("SendNotification", {
+                    Title = "Hecate found!";
+                    Text = "Click the button below to teleport.";
+                    Duration = 5;
+                    Button1 = "Teleport";
+                    Callback =  TeleportBind
+                })
+
+                HecatePart = Child
             end
         end
+    end
+end)
+
+task.spawn(function()
+    TeleportBind.OnInvoke = function()
+        if HecatePart == nil then return end
+
+        Character:FindFirstChild("HumanoidRootPart").CFrame = HecatePart.CFrame
     end
 end)
 
