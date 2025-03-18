@@ -159,6 +159,14 @@ uiSecs.PlayerExploits:addToggle("Reduced stamina consumption.", false, function(
     var["StaminaReduction"] = value
 end)
 
+uiSecs.PlayerExploits:addButton("Discover all islands.", function(value)
+    for _,Island in Map:GetChildren() do
+        if Island:FindFirstChild("Center") then
+            Remotes.Misc.UpdateLastSeen:FireServer(Island.Name, "")
+        end
+    end
+end)
+
 uiSecs.dmgExploits:addSlider("Damage multiplier amount.", 1, 1, 15, function(value)
     var["dmgMulti"] = value
 end)
