@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.6.1")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.7")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -11,10 +11,14 @@ local Lighting = game:GetService("Lighting")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 local CurrentCamera = Workspace.CurrentCamera
+local RunService = game:GetService("RunService")
+
+local CurrentCamera = workspace.CurrentCamera
 
 local Map = Workspace:WaitForChild("Map", 10)
 local DarkSeaFolder = Map.SeaContent:WaitForChild("DarkSea",10)
 local NPCs = Workspace:WaitForChild("NPCs")
+local BoatsFolder = Workspace:WaitForChild("Boats")
 
 local RS = game:GetService("ReplicatedStorage"):WaitForChild("RS",10)
 local Remotes = RS:WaitForChild("Remotes")
@@ -27,7 +31,8 @@ local BasicModule = require(RS.Modules.Basic)
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-local TpDebounce, FillDebounce, ModifiedMagic, ModifiedMelee, HecatePart = false, false, nil, nil, nil
+local TpDebounce, FillDebounce, ModifiedMagic, ModifiedMelee, HecatePart, HoverFrameConnection = false, false, nil, nil, nil, nil
+local EpiESPGui = nil
 
 local DropdownTpList, MagicList, MeleeList = {}, {}, {}
 
@@ -56,7 +61,9 @@ local remotes = {
     "DealAttackDamage",
     "DealStrengthDamage",
     "DealWeaponDamage",
-    "DealMagicDamage"
+    "DealMagicDamage",
+    "DealBoatDamage",
+    "DealBoatDamage3"
 }
 
 local AnimationPacks = {
@@ -96,6 +103,9 @@ local var = {
     AutoFish = false,
     AutoWash = false,
     HecateNotifier = false,
+    EpicenterESP = false,
+    BoatESP = false,
+    FishAnywhere = false,
 }
 
 local uiPages = {}
@@ -109,7 +119,6 @@ uiPages.Misc = Veynx:addPage("Misc")
 
 uiSecs.Godmode = uiPages.Main:addSection("Godmode")
 uiSecs.dmgExploits = uiPages.Main:addSection("Damage Exploits")
-uiSecs.AutoFishing = uiPages.Main:addSection("Auto Fish")
 uiSecs.NPCE = uiPages.Main:addSection("NPC Exploits")
 uiSecs.DSE = uiPages.DSExploits:addSection("Dark sea exploits")
 uiSecs.UI = uiPages.Main:addSection("UI")
@@ -122,6 +131,7 @@ uiSecs.Discord = uiPages.Misc:addSection("Discord")
 uiSecs.BoatExploits = uiPages.Exploits:addSection("Boat Exploits")
 uiSecs.ItemExploits = uiPages.Exploits:addSection("Item Exploits")
 uiSecs.PlayerExploits = uiPages.Exploits:addSection("Player Exploits")
+uiSecs.FishExploits = uiPages.Exploits:addSection("Fish Exploits")
 uiSecs.MagicExploits = uiPages.Exploits:addSection("Magic Exploits")
 uiSecs.MeleeExploits = uiPages.Exploits:addSection("Melee Exploits")
 
@@ -171,8 +181,18 @@ uiSecs.MagicExploits:addToggle("One tap buildings/structures.", false, function(
     var["OneTapStructure"] = value
 end)
 
-uiSecs.AutoFishing:addToggle("Auto fish toggle.", false, function(value)
+uiSecs.FishExploits:addToggle("Auto fish toggle.", false, function(value)
     var["AutoFish"] = value
+end)
+
+uiSecs.FishExploits:addToggle("Fish anywhere.", false, function(value)
+    var["FishAnywhere"] = value
+
+    if value == false then
+        task.delay(1, function()
+            require(RS.Modules.Basic).OceanLevel = 400
+        end)
+    end
 end)
 
 uiSecs.UI:addKeybind("Toggle UI.", Enum.KeyCode.Equals, function(value)
@@ -238,6 +258,55 @@ uiSecs.DSE:addButton("Fast cargo ship repair.", function()
     end
 end)
 
+uiSecs.DSE:addToggle("Epicenter ESP", false, function(value)
+    var["EpicenterESP"] = value
+    local CenterPart = Map:FindFirstChild("The Epicenter").Center
+    
+    if not var["EpicenterESP"] then
+        if EpiESPGui then
+            EpiESPGui:Destroy()
+        end
+        if HoverFrameConnection then
+            HoverFrameConnection:Disconnect()
+        end
+        return
+    end
+
+    if not EpiESPGui then
+        EpiESPGui = Instance.new("ScreenGui")
+        EpiESPGui.Parent = game:GetService("CoreGui")
+
+        Frame = Instance.new("Frame")
+        Frame.Size = UDim2.new(0, 50, 0, 50)
+        Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        Frame.BorderSizePixel = 2
+        Frame.Parent = EpiESPGui
+        Frame.Visible = false
+    end
+
+    HoverFrameConnection = RunService.RenderStepped:Connect(function()
+        if not var["EpicenterESP"] then
+            if EpiESPGui then
+                EpiESPGui:Destroy()
+            end
+            if HoverFrameConnection then
+                HoverFrameConnection:Disconnect()
+            end
+            HoverFrameConnection = nil
+            return
+        end
+
+        local screenPosition, onScreen = CurrentCamera:WorldToViewportPoint(CenterPart.Position)
+
+        if onScreen then
+            Frame.Position = UDim2.new(0, screenPosition.X - 25, 0, screenPosition.Y - 25)
+            Frame.Visible = true
+        else
+            Frame.Visible = false
+        end
+    end)
+end)
+
 uiSecs.DSE:addToggle("Toggle auto wash bin.", false, function(value)
     var["AutoWash"] = value
 end)
@@ -258,6 +327,37 @@ end)
 uiSecs.Misc:addButton("Quick clear notoriety.", function()
     Remotes.UI.ClearBounty:InvokeServer("ClearNotoriety")
 end)
+
+uiSecs.Misc:addButton("Join small server.", function()
+    local placeId = game.PlaceId
+    local httpService = game:GetService("HttpService")
+    local teleportService = game:GetService("TeleportService")
+    
+    local function fetchServers(cursor)
+        cursor = cursor or ""
+        local url = string.format("https://games.roblox.com/v1/games/%d/servers/public?limit=100&cursor=%s", placeId, cursor)
+        return httpService:JSONDecode(game:HttpGet(url))
+    end
+    
+    local bestServer
+    local minPlayers = math.huge
+    local data = fetchServers()
+    
+    while data.nextPageCursor do
+        for _, server in ipairs(data.data) do
+            if server.playing < minPlayers then
+                minPlayers = server.playing
+                bestServer = server
+            end
+        end
+        data = fetchServers(data.nextPageCursor)
+    end
+    
+    if bestServer then
+        teleportService:TeleportToPlaceInstance(game.PlaceId, bestServer.id, game.Players.LocalPlayer)
+    end
+end)
+
 
 uiSecs.Misc:addDropdown("Animation Packs", AnimationPacks, function(value)
     BasicModule.GetAnimationPack = function()
@@ -409,6 +509,12 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+    while task.wait(0.05) do
+        if var["FishAnywhere"] == true then require(RS.Modules.Basic).OceanLevel = Character.HumanoidRootPart.Position.Y - 1 end
+    end
+end)
+
+task.spawn(function()
     while task.wait(5) do
         if var["HecateNotifier"] == true then 
             for _,Child in DarkSeaFolder:GetChildren() do
@@ -423,7 +529,7 @@ task.spawn(function()
                     Callback =  TeleportBind
                 })
 
-                HecatePart = Child
+                HecatePart = Child:FindFirstChild("HecateEssence")
             end
         end
     end
