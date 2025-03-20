@@ -268,14 +268,16 @@ end)
 
 uiSecs.DSE:addToggle("Epicenter ESP", false, function(value)
     var["EpicenterESP"] = value
-    local CenterPart = Map:FindFirstChild("The Epicenter").Center
+    local CenterPart = Map:FindFirstChild("The Epicenter") and Map:FindFirstChild("The Epicenter").Center
     
     if not var["EpicenterESP"] then
         if EpiESPGui then
             EpiESPGui:Destroy()
+            EpiESPGui = nil
         end
         if HoverFrameConnection then
             HoverFrameConnection:Disconnect()
+            HoverFrameConnection = nil
         end
         return
     end
@@ -292,25 +294,33 @@ uiSecs.DSE:addToggle("Epicenter ESP", false, function(value)
         Frame.Visible = false
     end
 
+    if HoverFrameConnection then
+        HoverFrameConnection:Disconnect()
+        HoverFrameConnection = nil
+    end
+
     HoverFrameConnection = RunService.RenderStepped:Connect(function()
         if not var["EpicenterESP"] then
             if EpiESPGui then
                 EpiESPGui:Destroy()
+                EpiESPGui = nil
             end
             if HoverFrameConnection then
                 HoverFrameConnection:Disconnect()
+                HoverFrameConnection = nil
             end
-            HoverFrameConnection = nil
             return
         end
 
-        local screenPosition, onScreen = CurrentCamera:WorldToViewportPoint(CenterPart.Position)
+        if CenterPart then
+            local screenPosition, onScreen = CurrentCamera:WorldToViewportPoint(CenterPart.Position)
 
-        if onScreen then
-            Frame.Position = UDim2.new(0, screenPosition.X - 25, 0, screenPosition.Y - 25)
-            Frame.Visible = true
-        else
-            Frame.Visible = false
+            if onScreen then
+                Frame.Position = UDim2.new(0, screenPosition.X - 25, 0, screenPosition.Y - 25)
+                Frame.Visible = true
+            else
+                Frame.Visible = false
+            end
         end
     end)
 end)
@@ -498,14 +508,14 @@ end)
 -- End
 
 task.spawn(function()
-    Character.ChildAdded:connect(function(Child)
+    LocalPlayer.Character.ChildAdded:connect(function(Child)
         if var["AutoFish"] == false then return end
         if Child.Name ~= "FishBiteGoal" then return end
 
-        repeat Remotes.Misc.ToolAction:FireServer(Character:FindFirstChildOfClass("Tool")) task.wait(0.1) until Child.Parent == nil
+        repeat Remotes.Misc.ToolAction:FireServer(LocalPlayer.Character:FindFirstChildOfClass("Tool")) task.wait(0.1) until Child.Parent == nil
 
         task.delay(math.random(2,4), function()
-            Remotes.Misc.ToolAction:FireServer(Character:FindFirstChildOfClass("Tool"))
+            Remotes.Misc.ToolAction:FireServer(LocalPlayer.Character:FindFirstChildOfClass("Tool"))
         end)
     end)
 end)
@@ -518,7 +528,7 @@ end)
 
 task.spawn(function()
     while task.wait(0.05) do
-        if var["FishAnywhere"] == true then require(RS.Modules.Basic).OceanLevel = Character.HumanoidRootPart.Position.Y - 1 end
+        if var["FishAnywhere"] == true then require(RS.Modules.Basic).OceanLevel = LocalPlayer.Character.HumanoidRootPart.Position.Y - 1 end
     end
 end)
 
@@ -547,7 +557,7 @@ task.spawn(function()
     TeleportBind.OnInvoke = function()
         if HecatePart == nil then return end
 
-        Character:FindFirstChild("HumanoidRootPart").CFrame = HecatePart.CFrame
+        LocalPlayer.Character:FindFirstChild("HumanoidRootPart").CFrame = HecatePart.CFrame
     end
 end)
 
