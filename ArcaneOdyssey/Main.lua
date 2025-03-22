@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.7.1")
+local Veynx = lib.new("Snowy | Arcane Odyssey v1.2.8 [TEST]")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -27,35 +27,17 @@ local TeleportBind = Instance.new("BindableFunction")
 local MagicModule = require(RS.Modules.Magic)
 local MeleeModule = require(RS.Modules.Melee)
 local BasicModule = require(RS.Modules.Basic)
+local InventoryModule = require(RS.Modules.Inventory)
 
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-local TpDebounce, FillDebounce, ModifiedMagic, ModifiedMelee, HecatePart, HoverFrameConnection = false, false, nil, nil, nil, nil
+local TpDebounce, FillDebounce, HecatePart, HoverFrameConnection = false, false, nil, nil
+
+local ModifiedMagic, ModifiedMelee, ModifiedWeapon = nil, nil, nil
 local EpiESPGui = nil
 
-local DropdownTpList, MagicList, MeleeList = {}, {}, {}
-
-local function GetClosestNPC()
-    local closestNPC = nil
-    local shortestDistance = math.huge
-
-    for _, NPC in NPCs:GetChildren() do
-        local NPCModel = NPC:FindFirstChildOfClass("Model")
-        if not NPCModel then continue end
-
-        local HumanoidRootPart = NPCModel:FindFirstChild("HumanoidRootPart")
-        if not HumanoidRootPart then continue end
-
-        local distance = (Character.HumanoidRootPart.Position - HumanoidRootPart.Position).Magnitude
-        if distance < shortestDistance then
-            shortestDistance = distance
-            closestNPC = HumanoidRootPart
-        end
-    end
-
-    return closestNPC
-end
+local DropdownTpList, MagicList, MeleeList, WeaponList = {}, {}, {}, {}
 
 local remotes = {
     "DealAttackDamage",
@@ -86,6 +68,12 @@ for _,Magic in MeleeModule["Types"] do
     table.insert(MeleeList, _)
 end
 
+for _,Item in InventoryModule["Items"] do
+    if not Item["WeaponType"] then continue end
+
+    table.insert(WeaponList, _)
+end
+
 local var = {
     dmgValue = false,
     dmgMulti = 1,
@@ -99,7 +87,6 @@ local var = {
     QuickFillBottles = false,
     ToggleLightning = false,
     DrinkBottleSilent = false,
-    NPCSilentAim = false,
     AutoFish = false,
     AutoWash = false,
     HecateNotifier = false,
@@ -134,6 +121,7 @@ uiSecs.PlayerExploits = uiPages.Exploits:addSection("Player Exploits")
 uiSecs.FishExploits = uiPages.Exploits:addSection("Fish Exploits")
 uiSecs.MagicExploits = uiPages.Exploits:addSection("Magic Exploits")
 uiSecs.MeleeExploits = uiPages.Exploits:addSection("Melee Exploits")
+uiSecs.WepExploits = uiPages.Exploits:addSection("Weapon Exploits")
 
 uiSecs.Godmode:addToggle("Godmode.", false, function(value)
     var["godmode"] = value
@@ -141,10 +129,6 @@ end)
 
 uiSecs.NPCE:addToggle("No NPC Aggro.", false, function(value)
     var["NPCBlock"] = value
-end)
-
-uiSecs.NPCE:addToggle("NPC Silent aim.", false, function(value)
-    var["NPCSilentAim"] = value
 end)
 
 uiSecs.PlayerExploits:addToggle("No location tracking.", false, function(value)
@@ -346,37 +330,6 @@ uiSecs.Misc:addButton("Quick clear notoriety.", function()
     Remotes.UI.ClearBounty:InvokeServer("ClearNotoriety")
 end)
 
-uiSecs.Misc:addButton("Join small server.", function()
-    local placeId = game.PlaceId
-    local httpService = game:GetService("HttpService")
-    local teleportService = game:GetService("TeleportService")
-    
-    local function fetchServers(cursor)
-        cursor = cursor or ""
-        local url = string.format("https://games.roblox.com/v1/games/%d/servers/public?limit=100&cursor=%s", placeId, cursor)
-        return httpService:JSONDecode(game:HttpGet(url))
-    end
-    
-    local bestServer
-    local minPlayers = math.huge
-    local data = fetchServers()
-    
-    while data.nextPageCursor do
-        for _, server in ipairs(data.data) do
-            if server.playing < minPlayers then
-                minPlayers = server.playing
-                bestServer = server
-            end
-        end
-        data = fetchServers(data.nextPageCursor)
-    end
-    
-    if bestServer then
-        teleportService:TeleportToPlaceInstance(game.PlaceId, bestServer.id, game.Players.LocalPlayer)
-    end
-end)
-
-
 uiSecs.Misc:addDropdown("Animation Packs", AnimationPacks, function(value)
     BasicModule.GetAnimationPack = function()
         return tostring(value)
@@ -450,7 +403,7 @@ uiSecs.MagicExploits:addTextbox("Imbue Speed", "1", function(value)
     if not ModifiedMagic then return end
     if not tonumber(value) then return end
     local num = tonumber(value)
-    if num > 3 then Veynx:Notify("Warning!", "This could break your game if you set it too high.  \n Suggested value: <3") end
+    if num > 3 then Veynx:Notify("Warning!", "This could break your game if you set it too high. \n Suggested value: <3") end
 
     MagicModule["Types"][ModifiedMagic].ImbueSpeed = num
 end)
@@ -485,10 +438,38 @@ uiSecs.MeleeExploits:addTextbox("Imbue Speed", "1", function(value)
     if not ModifiedMelee then return end
     if not tonumber(value) then return end
     local num = tonumber(value)
-    if num > 3 then Veynx:Notify("Warning!", "This could break your game if you set it too high.  \n Suggested value: < 3") end
+    if num > 3 then Veynx:Notify("Warning!", "This could break your game if you set it too high. \n Suggested value: < 3") end
 
     MeleeModule["Types"][ModifiedMelee].ImbueSpeed = num
 end)
+
+-- Weapon Exploits
+
+uiSecs.WepExploits:addDropdown("Weapon", WeaponList, function(value)
+    if not InventoryModule["Items"][value] then return end
+
+    ModifiedWeapon = value
+end)
+
+uiSecs.WepExploits:addTextbox("Size", "1", function(value)
+    if not ModifiedWeapon then return end
+    if not tonumber(value) then return end
+    local num = tonumber(value)
+    if num > 75 then Veynx:Notify("Warning!", "This could break your game if you set it too high. \n Suggested value: < 75") end
+
+    InventoryModule["Items"][ModifiedWeapon]["Specs"]["Attack Size"]["Value"] = num
+end)
+
+uiSecs.WepExploits:addTextbox("Speed", "1", function(value)
+    if not ModifiedWeapon then return end
+    if not tonumber(value) then return end
+    local num = tonumber(value)
+    if num > 3 then Veynx:Notify("Warning!", "This could break your game if you set it too high. \n Suggested value: < 3") end
+
+    InventoryModule["Items"][ModifiedWeapon]["Specs"]["Attack Speed"]["Value"] = num
+end)
+
+-- End
 
 uiSecs.MeleeExploits:addToggle("Drink Bottles Silently", false, function(value)
     var["DrinkBottleSilent"] = value   
@@ -514,7 +495,7 @@ task.spawn(function()
 
         repeat Remotes.Misc.ToolAction:FireServer(LocalPlayer.Character:FindFirstChildOfClass("Tool")) task.wait(0.1) until Child.Parent == nil
 
-        task.delay(math.random(2,4), function()
+        task.delay(1, function()
             Remotes.Misc.ToolAction:FireServer(LocalPlayer.Character:FindFirstChildOfClass("Tool"))
         end)
     end)
@@ -592,24 +573,6 @@ task.spawn(function()
         end
 
         return StaminaHook(self,unpack(args))
-    end))
-end)
-
-task.spawn(function()
-    local NPCSilentAim
-    NPCSilentAim = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
-        local args = { ... }
-        local method = getnamecallmethod()
-
-        if not checkcaller() and tostring(self) == "MousePosUpdate" and method == "FireServer" and var["NPCSilentAim"] == true then
-            local CloseNPC = GetClosestNPC()
-            if CloseNPC == nil then
-                return NPCSilentAim(self, unpack(args))
-            end
-            args[1] = CloseNPC.Position
-        end
-
-        return NPCSilentAim(self, unpack(args))
     end))
 end)
 
