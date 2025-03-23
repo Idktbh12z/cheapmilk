@@ -11,7 +11,7 @@ local AllowedTypes = {
 }
 
 ESPMod.Clear = function()
-	for _, entry in RegisteredPieces do
+	for _, entry in ipairs(RegisteredPieces) do
 		local part : Part, ui : BillboardGui = unpack(entry)
 		if not ui then continue end
 
@@ -21,7 +21,7 @@ ESPMod.Clear = function()
 end
 
 ESPMod.UnregisterESP = function(Part: BasePart)
-	for i, entry in RegisteredPieces do
+	for i, entry in ipairs(RegisteredPieces) do
 		local registeredPart : BasePart, ui : BillboardGui = unpack(entry)
 
 		if registeredPart ~= Part then continue end
