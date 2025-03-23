@@ -10,39 +10,39 @@ local AllowedTypes = {
 	"Part"
 }
 
-function ESPMod.Clear()
+ESPMod.Clear = function()
 	for _, entry in RegisteredPieces do
 		local part : Part, ui : BillboardGui = unpack(entry)
 		if not ui then continue end
-		
+
 		ui:Destroy()
 	end
 	RegisteredPieces = {}
 end
 
-function ESPMod.UnregisterESP(Part: BasePart)
+ESPMod.UnregisterESP = function(Part: BasePart)
 	for i, entry in RegisteredPieces do
 		local registeredPart : BasePart, ui : BillboardGui = unpack(entry)
-		
+
 		if registeredPart ~= Part then continue end
 		if not ui then continue end
-			
+
 		ui:Destroy()
 		table.remove(RegisteredPieces, i)
 		break
 	end
 end
 
-function ESPMod.RegisterESP(Part: BasePart)
+ESPMod.RegisterESP = function(Part: BasePart)
 	if not Part then return end
-	
+
 	if not table.find(AllowedTypes, Part.ClassName) then
 		return
 	end
-	
+
 	for i, entry in RegisteredPieces do
 		local registeredPart : BasePart, ui: BillboardGui = unpack(entry)
-		
+
 		if registeredPart == Part then return end
 	end
 
@@ -80,23 +80,21 @@ function ESPMod.RegisterESP(Part: BasePart)
 	TextLabel.TextScaled = true
 	TextLabel.TextSize = 14.000
 	TextLabel.TextWrapped = false
-	
+
 	UiStroke.Color = Color3.new(255,255,255)
 	UiStroke.Parent = TextLabel
-	
+
 	TextLabel.Text = Part.Name
-	
+
 	Part.Destroying:Connect(function()
 		ESPMod.UnregisterESP(Part)
 	end)
-	
+
 	Part:GetPropertyChangedSignal("Transparency"):Connect(function()
 		if Part.Transparency ~= 1 then task.wait() return end
-		
+
 		ESPMod.UnregisterESP(Part)
 	end)
-	
-	table.insert(RegisteredPieces, {Part, UI})
 end
 
 return ESPMod
