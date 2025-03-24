@@ -2,8 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local ESPLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/cheapmilk/refs/heads/main/Lib/ESPLib.lua"))()
-local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9")
+local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9.1")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -131,6 +130,15 @@ uiSecs.MagicExploits = uiPages.Exploits:addSection("Magic Exploits")
 uiSecs.MeleeExploits = uiPages.Exploits:addSection("Melee Exploits")
 uiSecs.WepExploits = uiPages.Exploits:addSection("Weapon Exploits")
 
+local function randomString()
+	local length = math.random(10,20)
+	local array = {}
+	for i = 1, length do
+		array[i] = string.char(math.random(32, 126))
+	end
+	return table.concat(array)
+end
+
 local function ClearItemESP()
     for _, entry in RegisteredPieces do
 		local part : Part, ui : BillboardGui = unpack(entry)
@@ -141,7 +149,7 @@ local function ClearItemESP()
 	RegisteredPieces = {}
 end
 
-local function UnregisterItemESP()
+local function UnregisterItemESP(Part: BasePart)
     for i, entry in RegisteredPieces do
 		local registeredPart : BasePart, ui : BillboardGui = unpack(entry)
 
@@ -172,7 +180,7 @@ local function RegisterItemESP(Part: BasePart, Type: string)
 	local TextLabel = Instance.new("TextLabel")
 	local UiStroke = Instance.new("UIStroke")
 
-	UI.Name = tostring(HttpService:GenerateGUID())
+	UI.Name = tostring(randomString())
 	UI.Parent = Part or Part:FindFirstChildOfClass("Part") or Part.PrimaryPart
 	UI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	UI.Active = true
