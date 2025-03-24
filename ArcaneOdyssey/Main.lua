@@ -165,9 +165,8 @@ end
 local function RegisterItemESP(Part: BasePart, Type: string)
 	if not Part then return end
 
-    if not table.find(AllowedTypes, Part.ClassName) then
-        return
-    end
+    if not table.find(AllowedTypes, Part.ClassName) then return end
+    if Part.Transparency > 1 then return end
 
 	for i, entry in RegisteredPieces do
 		local registeredPart : BasePart, ui: BillboardGui = unpack(entry)
