@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9.2")
+local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9.21")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -325,6 +325,15 @@ uiSecs.ItemExploits:addButton("Item ESP.", function(value)
                 if Folder.Name == "Chests" then
                     for _,Chest in Folder:GetChildren() do
                         RegisterItemESP(Chest:FindFirstChild("Base"))
+                    end
+                end
+
+
+                if Folder.Name == "Details" then
+                    for _,Herb in Folder:GetChildren() do
+                        if not Herb:FindFirstChildOfClass("ProximityPrompt") then continue end
+
+                        RegisterItemESP(Herb)
                     end
                 end
             end
