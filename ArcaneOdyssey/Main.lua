@@ -45,7 +45,9 @@ local remotes = {
     "DealWeaponDamage",
     "DealMagicDamage",
     "DealDamageBoat",
-    "DealDamageBoat3"
+    "DealDamageBoat3",
+    "DealDamageBoat2",
+    "DealDamageBoat1"
 }
 
 local AnimationPacks = {
