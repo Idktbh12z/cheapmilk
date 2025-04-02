@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9.21 [FREE]")
+local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9.3 [FREE]")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -32,12 +32,12 @@ local InventoryModule = require(RS.Modules.Inventory)
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-local TpDebounce, FillDebounce, HecatePart, HoverFrameConnection = false, false, nil, nil
+local TpDebounce, FillDebounce, = false, false
 
-local ModifiedMagic, ModifiedMelee, ModifiedWeapon, ESPItemIsland = nil, nil, nil, nil
+local ModifiedMagic, ESPItemIsland = nil, nil
 local EpiESPGui = nil
 
-local DropdownTpList, MagicList, MeleeList, WeaponList, RegisteredPieces, DropdownTpList2 = {}, {}, {}, {}, {}, {}
+local DropdownTpList, MagicList RegisteredPieces, DropdownTpList2 = {}, {}, {}, {}
 
 local remotes = {
     "DealAttackDamage",
@@ -65,16 +65,6 @@ table.insert(DropdownTpList2, "Diving Spots")
 
 for _,Magic in MagicModule["Types"] do
     table.insert(MagicList, _)
-end
-
-for _,Magic in MeleeModule["Types"] do
-    table.insert(MeleeList, _)
-end
-
-for _,Item in InventoryModule["Items"] do
-    if not Item["WeaponType"] then continue end
-
-    table.insert(WeaponList, _)
 end
 
 local var = {
@@ -246,6 +236,10 @@ uiSecs.NPCE:addToggle("No NPC Aggro.", false, function(value)
     var["NPCBlock"] = value
 end)
 
+uiSecs.NPCE:addToggle("No NPC Aggro.", false, function(value)
+    var["NPCBlock"] = value
+end)
+
 uiSecs.PlayerExploits:addToggle("No location tracking.", false, function(value)
     var["NoTracking"] = value
 end)
@@ -256,6 +250,17 @@ end)
 
 uiSecs.PlayerExploits:addToggle("Reduced stamina consumption.", false, function(value)
     var["StaminaReduction"] = value
+end)
+
+uiSecs.PlayerExploits:addToggle("Drink Bottles Silently", false, function(value)
+    var["DrinkBottleSilent"] = value   
+
+    Veynx:Notify("Keybind!", "The default keybind is '.'")
+end)
+
+uiSecs.PlayerExploits:addButton("Toggle insanity effects.", function(value)
+    local InsanityLocalScript = LocalPlayer.PlayerGui:WaitForChild("Temp",10):FindFirstChild("Insanity")
+    InsanityLocalScript.Disabled = not InsanityLocalScript.Disabled
 end)
 
 uiSecs.PlayerExploits:addButton("Discover all islands.", function(value)
@@ -411,11 +416,6 @@ uiSecs.DSE:addToggle("Toggle auto wash bin.", false, function(value)
     var["AutoWash"] = value
 end)
 
-uiSecs.PlayerExploits:addButton("Toggle insanity effects.", function(value)
-    local InsanityLocalScript = LocalPlayer.PlayerGui:WaitForChild("Temp",10):FindFirstChild("Insanity")
-    InsanityLocalScript.Disabled = not InsanityLocalScript.Disabled
-end)
-
 uiSecs.Misc:addButton("ArcaneYield (modded IY).", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Idktbh12z/ArcaneYIELD/refs/heads/main/main.lua"))()
 end)
@@ -500,12 +500,6 @@ uiSecs.MagicExploits:addTextbox("Imbue Speed", "1", function(value)
     if num > 3 then Veynx:Notify("Warning!", "This could break your game if you set it too high. \n Suggested value: <3") end
 
     MagicModule["Types"][ModifiedMagic].ImbueSpeed = num
-end)
-
-uiSecs.MeleeExploits:addToggle("Drink Bottles Silently", false, function(value)
-    var["DrinkBottleSilent"] = value   
-
-    Veynx:Notify("Keybind!", "The default keybind is '.'")
 end)
 
 UserInputService.InputBegan:connect(function(Input, IsChatBox)
@@ -702,4 +696,13 @@ task.spawn(function()
 
         return RepairHook(self, unpack(args))
     end))
+end)
+
+task.spawn(function()
+    StarterGui:SetCore("SendNotification", {
+        Title = "Alert!";
+        Text = "To access premium features you need to recieve access to premium. Join our discord for more info (misc tab)";
+        Duration = 10;
+        Button1 = "Ok!";
+    })
 end)
