@@ -2,7 +2,7 @@ if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
-local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9.3 [FREE]")
+local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.2.9.3.1 [FREE]")
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
@@ -32,7 +32,7 @@ local InventoryModule = require(RS.Modules.Inventory)
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 
-local TpDebounce, FillDebounce, = false, false
+local TpDebounce, FillDebounce = false, false
 
 local ModifiedMagic, ESPItemIsland = nil, nil
 local EpiESPGui = nil
