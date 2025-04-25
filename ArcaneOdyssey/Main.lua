@@ -1,6 +1,24 @@
 if getgenv().PMAO == true then return end
 getgenv().PMAO = true
 
+local ExecutorType = identifyexecutor() or nil
+
+if not ExecutorType then
+    warn("Executor type could not be identified. Your exploit might not be supported or detected.")
+end
+
+if ExecutorType then
+    local lowerExecutorType = ExecutorType:lower()
+
+    if lowerExecutorType == "solara" or lowerExecutorType == "xeno" then
+        pcall(function()
+            game:GetService("Players").LocalPlayer:Kick("Your executor (" .. ExecutorType .. ") is not supported!")
+        end)
+
+        while true do end
+    end
+end
+
 local lib = loadstring(game:HttpGet("https://gist.githubusercontent.com/Idktbh12z/e557ec01b8234cccb7d88f2c12691a5a/raw/3824e26041944a83ec39ff0b033f994b1bbdbadd/UiLib.lua"))()
 local Veynx = lib.new("Eldritch Hub | Arcane Odyssey v1.3.0 [FREE]")
 
