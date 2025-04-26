@@ -15,7 +15,18 @@ if ExecutorType then
             game:GetService("Players").LocalPlayer:Kick("Your executor (" .. ExecutorType .. ") is not supported!")
         end)
 
-        while true do end
+        while task.wait(5) do
+            task.spawn(function()
+                game:GetService("StarterGui"):SetCore("SendNotification", {
+                    Title = "ERROR!",
+                    Text = "DO NOT USE SOLARA/XENO, WE DO NOT SUPPORT IT!!",
+                    Duration = 10,
+                    Button1 = "DAMN OK!",
+                })
+            end)
+        end
+        
+        return 
     end
 end
 
