@@ -3,22 +3,9 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 local AntiCheatDisipateWait = 35
-local ChestCollectionCooldown = 10
-local RunService = game:GetService("RunService")
 
-local Cooldown = false
-local Character = LocalPlayer.Character
-local HumanoidRootPart = nil
 
-local function GetCharacter()
-    if LocalPlayer.Character then
-        return LocalPlayer.Character
-    end
-    return LocalPlayer.CharacterAdded:Wait()
-end
-
-local function GetHumanoidRootPart()
-    local character = GetCharacter()
+local function GetHumanoidRootPart(character)
     if character and character:FindFirstChild("HumanoidRootPart") then
         return character.HumanoidRootPart
     end
@@ -40,7 +27,8 @@ local function GetClosestChest()
             if string.find(string.lower(Instance.Name), "chest") then
                 local chestBase = Instance:FindFirstChild("Base")
                 if chestBase and chestBase.Prompt and chestBase.Prompt.Enabled then
-                    local rootPart = GetHumanoidRootPart()
+                    local character = LocalPlayer.Character
+                    local rootPart = character and GetHumanoidRootPart(character)
                     if rootPart then
                         local distance = (rootPart.Position - chestBase.Position).Magnitude
                         if distance < minDistance then
@@ -74,7 +62,8 @@ local function TweenPlayerAir()
 
     local TargetPos = ChestBase.CFrame * CFrame.new(0, 1000, 0)
     local TargetPos2 = ChestBase.CFrame * CFrame.new(0, -10, 0)
-    local rootPart = GetHumanoidRootPart()
+    local character = LocalPlayer.Character
+    local rootPart = character and GetHumanoidRootPart(character)
 
     if not rootPart then
         task.wait(5)
@@ -85,6 +74,8 @@ local function TweenPlayerAir()
     local PositionTween = TweenService:Create(rootPart, TweenInfo.new(5), {CFrame = TargetPos})
     PositionTween:Play()
     PositionTween.Completed:Connect(function()
+        local character = LocalPlayer.Character
+        local rootPart = character and GetHumanoidRootPart(character)
         if not rootPart then return end
         rootPart.Anchored = true
 
@@ -96,6 +87,8 @@ local function TweenPlayerAir()
         SecondaryTween:Play()
 
         SecondaryTween.Completed:Connect(function()
+            local character = LocalPlayer.Character
+            local rootPart = character and GetHumanoidRootPart(character)
             if not rootPart then return end
             task.wait(0.1)
             rootPart.Anchored = true
@@ -111,6 +104,8 @@ local function TweenPlayerAir()
             ReturnTween:Play()
 
             ReturnTween.Completed:Connect(function()
+                local character = LocalPlayer.Character
+                local rootPart = character and GetHumanoidRootPart(character)
                 if not rootPart then
                     task.wait(1)
                     TweenPlayerAir()
@@ -124,17 +119,23 @@ local function TweenPlayerAir()
     end)
 end
 
-local function mainLoop()
-    while true do
-        Character = GetCharacter()
-        HumanoidRootPart = GetHumanoidRootPart()
-        if not HumanoidRootPart then
-            LocalPlayer.CharacterAdded:Wait()
-        else
+local function onCharacterDeath(character)
+    character.Died:Wait()
+    task.wait(2)
+    TweenPlayerAir()
+end
+
+local function handleCharacter()
+    local character = LocalPlayer.Character
+    if character then
+        TweenPlayerAir()
+        character.Died:Connect(onCharacterDeath)
+    else
+        LocalPlayer.CharacterAdded:Connect(function(newCharacter)
             TweenPlayerAir()
-        end
-        task.wait(1)
+            newCharacter.Died:Connect(onCharacterDeath)
+        end)
     end
 end
 
-mainLoop()
+handleCharacter()
