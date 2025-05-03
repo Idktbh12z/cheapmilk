@@ -4,6 +4,8 @@ local LocalPlayer = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 local AntiCheatDisipateWait = 35
 
+local characterAddedConnection = nil
+local diedConnection = nil
 
 local function GetHumanoidRootPart(character)
     if character and character:FindFirstChild("HumanoidRootPart") then
@@ -119,8 +121,8 @@ local function TweenPlayerAir()
     end)
 end
 
-local function onCharacterDeath(character)
-    character.Died:Wait()
+local function onCharacterDeath(humanoid)
+    humanoid.Died:Wait()
     task.wait(2)
     TweenPlayerAir()
 end
@@ -128,12 +130,27 @@ end
 local function handleCharacter()
     local character = LocalPlayer.Character
     if character then
-        TweenPlayerAir()
-        character.Died:Connect(onCharacterDeath)
-    else
-        LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
             TweenPlayerAir()
-            newCharacter.Died:Connect(onCharacterDeath)
+            if diedConnection then
+                diedConnection:Disconnect()
+            end
+            diedConnection = humanoid.Died:Connect(onCharacterDeath)
+        end
+    else
+        if characterAddedConnection then
+            characterAddedConnection:Disconnect()
+        end
+        characterAddedConnection = LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+            local humanoid = newCharacter:FindFirstChildOfClass("Humanoid")
+            if humanoid then
+                TweenPlayerAir()
+                if diedConnection then
+                    diedConnection:Disconnect()
+                end
+                diedConnection = humanoid.Died:Connect(onCharacterDeath)
+            end
         end)
     end
 end
