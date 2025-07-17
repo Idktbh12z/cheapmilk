@@ -435,7 +435,7 @@ end)
 
 uiSecs.Discord:addButton("Join our discord!", function()
     local Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Discord%20Inviter/Source.lua"))()
-    Module.Join("https://discord.gg/3jtCm4M5pq")
+    Module.Join("https://discord.gg/3ZtcW4V6te")
 end)
 
 uiSecs.TP:addDropdown("Teleports", DropdownTpList, function(value)
